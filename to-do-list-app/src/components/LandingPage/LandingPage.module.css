@@ -1,0 +1,42 @@
+.container {
+    text-align: center;
+    margin-top: 20vh;
+  }
+  
+  .boldText {
+    font-size: 3em;
+    font-weight: bold;
+  }
+  
+  .descriptorText {
+    font-size: 1.5em;
+    white-space: pre-line;
+    color: #777;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .descriptorText div {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  }
+
+
+  .descriptorText div.visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+  
+  .signupButton {
+    background-color: #F0AF4D;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    margin-top: 20px;
+    color: #FFFF;
+  }
+  
