@@ -1,0 +1,23 @@
+.centerContainer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+}
+
+.formGroup div {
+    padding-bottom: 20px;
+}
+
+.OrangeButton {
+    background-color: #F0AF4D !important;
+    border-color: #F0AF4D !important;
+    border: none;
+    color: #fff; /* White text color */
+}
+
+.cardMaxWidth {
+    max-width: 526px;
+}
+  
