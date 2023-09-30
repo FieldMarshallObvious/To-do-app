@@ -12,8 +12,9 @@ const Dashboard = () => {
     const navigate = useNavigate()
 
    const { updateDisplayName, logout } = useAuth();
-   const { getProjects } = useUser();
+   const { getProjects, createProject } = useUser();
    const [displayName, setDisplayName] = useState("");
+   const [projetTitle, setProjectTitle] = useState("");
 
    const [projects, setProjects] = useState({});
 
@@ -44,6 +45,16 @@ const Dashboard = () => {
           console.error("Error getting projects: ", error);
         }
     };
+
+    const handleCreateProject = async () => {
+        try {
+            const projectID = await createProject(projetTitle);  
+            console.log("Project ID: ", projectID);
+        } catch (error) {   
+            console.error("Error creating project: ", error);
+        }
+    };
+        
     
     // Formate the firebase timestamp to a readable date
     const formatDate = (timestamp) => {
@@ -92,37 +103,43 @@ const Dashboard = () => {
                 <Row>
                 <Col xs={6} md={6} lg={6}>
                     <div style={{paddingTop: "20px"}}>
-                        <Form.Group>
-                            <Form.Label>Project Name</Form.Label>
-                            <Form.Control type="text" /> 
+                        <Card.Subtitle>Create Project</Card.Subtitle>
+                        <Form.Group className="d-flex align-items-center" style={{marginTop: "20px"}}>
+                            <Form.Label className="mb-0 mr-2">Project:</Form.Label>
+                            <Form.Control 
+                                type="text" 
+                                value={projetTitle}
+                                onChange={(e) => setProjectTitle(e.target.value)}
+                                style={{marginLeft: "10px"}}
+                            />
                         </Form.Group>
-                        <Button variant="primary">
+                        <Button variant="primary" style={{marginTop: "20px"}} onClick={handleCreateProject}>
                             Create Project
                         </Button>
                     </div>
                 </Col>
                 <Col xs={6} md={6} lg={6}>
-                    <div style={{paddingTop: "20px"}}>
-                        <Button variant="primary" onClick={handleGetProjects}>
-                            Get Projects
-                        </Button>
-                    </div>
-
                     <Card style={{marginTop: "20px"}}>
                         <Card.Body>
-                        {Object.values(projects).map(project => (
-                            <div key={project.id}>
-                                <Card.Subtitle>{project.id.replace(/_/g, ' ')}</Card.Subtitle>
-                                {project.Tasks.map(task => (
-                                    <div key={task.name}>
-                                        {task.name} - {formatDate(task.due_date)} 
-                                    </div>
-                                    ))
-                                }
+                        {Object.values(projects).map((project, index) => (
+                            <div key={project?.id || 'default_key'} style={{paddingTop: `${ index == 0 ? "0px":"10px"}`}}>
+                                {project?.id && <Card.Subtitle>{project.id.replace(/_/g, ' ')}</Card.Subtitle>}
+                                {Array.isArray(project?.Tasks) && project.Tasks.map(task => 
+                                    (task.name && task.due_date) && (
+                                        <div key={task.name}>
+                                            {task.name} - {formatDate(task.due_date)}
+                                        </div>
+                                    )
+                                )}
                             </div>
                         ))}
                         </Card.Body>
                     </Card>
+                    <div style={{paddingTop: "20px"}}>
+                            <Button variant="primary" onClick={handleGetProjects}>
+                                Get Projects
+                            </Button>
+                    </div>
                 </Col>
                 </Row>
                 </Card.Body>

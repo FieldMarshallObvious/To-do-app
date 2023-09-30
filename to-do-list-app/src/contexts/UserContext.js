@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { auth, db } from '../firebase'; // Import initialized Firebase
-import { collection, doc, getDoc, setDoc, getDocs } from 'firebase/firestore';
+import { collection, doc, getDoc, setDoc, getDocs, addDoc } from 'firebase/firestore';
 
 const UserContext = React.createContext();
 
@@ -40,12 +40,29 @@ export function UserProvider ({ children }) {
   };
 
   const createProject = async (project) => {
-    if (currentUser) {
-      let userID = currentUser.uid;
-      let projectsRef = db.collection('users').doc(userID).collection('projects');
+    console.log("Project: ", project);
+    if (currentUser && project) {
+      const userID = currentUser.uid;
+  
+      if (project.trim() === '') {
+        console.error("Project title is required");
+        throw new Error("Project title is required");
+      }
+  
+      const projectRef = collection(db, 'Users', userID, 'projects'); 
+
       try {
-        const docRef = await projectsRef.add(project);
-        return docRef.id;
+        const projectDocRef = doc(projectRef, project);
+        const projectSnapshot = await getDoc(projectDocRef);
+
+        if ( projectSnapshot.exists ) {
+          await setDoc(projectDocRef, {tasks: []});
+          return project;
+        }
+        else {
+          console.error("Project already exists");
+          throw new Error("Project already exists");
+        }
       } catch (error) {
         console.error("Error creating project: ", error);
         throw error;
@@ -53,12 +70,12 @@ export function UserProvider ({ children }) {
     }
   };
 
-  const createTask = async (project,task) => {
+  const createTask = async (project, task) => {
     if (currentUser) {
-      let userID = currentUser.uid;
-      let projectRef = db.collection('users').doc(userID).collection('projects').doc(project).collection('tasks');
+      const userID = currentUser.uid;
+      const tasksRef = db.collection('users').doc(userID).collection('projects').doc(project).collection('tasks');
       try {
-        const docRef = await projectRef.add(task);
+        const docRef = await tasksRef.add(task);
         return docRef.id;
       } catch (error) {
         console.error("Error creating task: ", error);
@@ -70,7 +87,9 @@ export function UserProvider ({ children }) {
 
   const value = {
     currentUser,
-    getProjects
+    getProjects,
+    createProject,
+    createTask
   };
 
   return (

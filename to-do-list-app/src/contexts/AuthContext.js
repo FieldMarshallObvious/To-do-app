@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react"
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updateProfile } from 'firebase/auth';
 import { auth } from '../firebase';  // Adjust the path according to your file structure
 
 const AuthContext = React.createContext()
@@ -42,6 +42,16 @@ export function AuthProvider({ children }) {
     return currentUser.updatePassword(password)
   }
 
+  function updateDisplayName(displayName) {
+    return updateProfile(currentUser, {
+      displayName: displayName,
+    }).then(() => {
+      // Profile updated!
+      // Note: If you need to have the latest user data, reload the user.
+      setCurrentUser({ ...currentUser, displayName: displayName });
+    });
+  }
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       setCurrentUser(user)
@@ -58,7 +68,8 @@ export function AuthProvider({ children }) {
     logout,
     resetPassword,
     updateEmail,
-    updatePassword
+    updatePassword,
+    updateDisplayName
   }
 
   return (
