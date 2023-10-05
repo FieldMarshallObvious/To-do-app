@@ -19,8 +19,8 @@ const EditTasks = () => {
     // * Edit project in the database
     const handleEditProject = async () => {
         try {
-            let newPayload = { title: (newProjectTitle.trim() === "" ? oldProjectTitle : newProjectTitle).replace(/\s+/g, '_') };
-            let oldPayload = { title: oldProjectTitle.replace(/\s+/g, '_') };
+            let newPayload = { title: (newProjectTitle.trim() === "" ? oldProjectTitle : newProjectTitle) };
+            let oldPayload = { title: oldProjectTitle };
             
             if ( projectDescription.trim() !== '' ) {
                 newPayload.description = projectDescription;
@@ -60,6 +60,9 @@ const EditTasks = () => {
     
             const taskID = await editTask(getProjectTitle, oldTaskData, newTaskData);
             console.log("Task ID: ", taskID);
+            setGetProjectTitle('');
+            setNewTaskTitle('');
+            setSelectedDate(null);
     
         } catch (error) {
             console.error("Error creating task: ", error);

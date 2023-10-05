@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { auth, db } from '../firebase'; // Import initialized Firebase
-import { collection, doc, getDoc, setDoc, getDocs, addDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { collection, doc, getDoc, setDoc, getDocs, addDoc, updateDoc, arrayUnion, deleteDoc } from 'firebase/firestore';
 
 const UserContext = React.createContext();
 
@@ -11,7 +11,6 @@ export function useUser() {
 export function UserProvider ({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [projects, setProjects] = useState([]);
-  const [projectDocRef, setProjectDocRef] = useState([]);
 
   useEffect(() => {
     // Set up a listener for authentication state changes
@@ -32,7 +31,6 @@ export function UserProvider ({ children }) {
         const querySnapshot = await getDocs(tasksRef);
         querySnapshot.forEach((doc) => {
           projectData.push({ id: doc.id, ...doc.data() });
-          setProjectDocRef((prevRefs) => [...prevRefs, doc]);
         });
         setProjects(projectData);
         
@@ -57,13 +55,18 @@ export function UserProvider ({ children }) {
       const projectRef = collection(db, 'Users', userID, 'projects'); 
 
       try {
-        const projectDocRef = doc(projectRef, project.title);
-        const projectSnapshot = await getDoc(projectDocRef);
+        let projectExists = projects.find((p) => p.Title === project.title);
 
-        if ( projectSnapshot.exists ) {
-          await setDoc(projectDocRef, {Tasks: [], Title: project.title, description: project.description, Color: project.color});
-          setProjects((prevProjects) => [...prevProjects, { id: projectDocRef.id, ...project }]);
-          setProjectDocRef((prevRefs) => [...prevRefs, projectDocRef]);
+        if ( !projectExists ) {
+          let payload =  {Tasks: [], Title: project.title, description: project.description, Color: project.color}
+          
+          const projectDocRef = await addDoc(projectRef, payload);   
+
+          const newProject = { id: projectDocRef.id, ...payload };
+
+          console.log("New Project: ", newProject);
+          
+          setProjects((prevProjects) => [...prevProjects, newProject]);
           return project;
         }
         else {
@@ -132,6 +135,29 @@ export function UserProvider ({ children }) {
     }
   };
 
+  const deleteProject = async (project) => {
+    if (currentUser) {
+      const userID = currentUser.uid;
+      const projectRef = collection(db, 'Users', userID, 'projects');
+      let projectRefID = projects.find((p) => p.Title === project);
+      const projectDocRef = doc(projectRef, projectRefID.id);
+  
+      try {
+        const projectSnapshot = await getDoc(projectDocRef);
+        if (!projectSnapshot.exists()) {
+          console.error("Project does not exist");
+          return;
+        }
+        await deleteDoc(projectDocRef);
+        setProjects((prevProjects) => prevProjects.filter((p) => p.Title !== project));
+        return projectDocRef.id;
+      } catch (error) {
+        console.error("Error deleting project: ", error);
+        throw error;
+      }
+    }
+  }
+
 
 
   const createTask = async (project, task) => {
@@ -145,10 +171,23 @@ export function UserProvider ({ children }) {
         return;
       }
 
+      let projectRef = projects.find((p) => p.Title === project);
+
       const userID = currentUser.uid;
-      const projectsRef = collection(db, 'Users', userID, 'projects') 
-      const projectDocRef = doc(projectsRef, project);
+      const projectsRef = collection(db, 'Users', userID, 'projects');
+      const projectDocRef = doc(projectsRef, projectRef.id);
       try {
+        setProjects((prevProjects) => {
+          const editedProjects = prevProjects.map((p) => { 
+            if (p.id === projectRef.id) {
+              return { id: projectRef.id, ...projectRef, Tasks: [...projectRef.Tasks, task] };
+            }
+            return p;
+          });
+
+          return editedProjects;
+        });
+
         await updateDoc(projectDocRef, {
           Tasks: arrayUnion(task)
         });
@@ -174,7 +213,11 @@ export function UserProvider ({ children }) {
   
       const userID = currentUser.uid;
       const projectsRef = collection(db, 'Users', userID, 'projects')
-      const projectDocRef = doc(projectsRef, project);
+
+      let projectRef = projects.find((p) => p.Title === project);
+
+
+      const projectDocRef = doc(projectsRef, projectRef.id);
   
       try {
         const projectSnapshot = await getDoc(projectDocRef);
@@ -193,7 +236,7 @@ export function UserProvider ({ children }) {
         
         setProjects((prevProjects) => {
           const editedProjects = prevProjects.map((p) => { 
-            if (p.id === project) {
+            if (p.Title === project) {
               return { id: project, ...projectSnapshot.data(), Tasks: currentTasks };
             }
             return p;
@@ -210,17 +253,71 @@ export function UserProvider ({ children }) {
       }
     }
   }; 
+
+  const deleteTask = async (task, project) => {
+    if (currentUser) {
+      if (project.trim() === '') {
+        project = 'Default';
+      }
+  
+      if (!task || task.trim() === '') {
+        console.error("Task input is empty or undefined");
+        return;
+      }
+  
+      const userID = currentUser.uid;
+      const projectsRef = collection(db, 'Users', userID, 'projects');
+      let projectRef = projects.find((p) => p.Title === project);
+      console.log("Project ref is ", projectRef)
+      const projectDocRef = doc(projectsRef, projectRef.id);
+  
+      try {
+        const projectSnapshot = await getDoc(projectDocRef);
+        if (!projectSnapshot.exists()) {
+          console.error("Project does not exist");
+          return;
+        }
+        const currentTasks = projectSnapshot.data().Tasks || [];
+  
+        const taskIndex = currentTasks.findIndex(t => t.name === task);
+        if (taskIndex === -1) {
+          console.error("Task not found");
+          return;
+        }
+        currentTasks.splice(taskIndex, 1);
+
+        setProjects((prevProjects) => {
+          const editedProjects = prevProjects.map((p) => { 
+            if (p.Title === project) {
+              return { id: project, ...projectSnapshot.data(), Tasks: currentTasks };
+            }
+            return p;
+          });
+  
+          return editedProjects;
+        });
+  
+        await updateDoc(projectDocRef, { Tasks: currentTasks });
+        return projectDocRef.id;
+  
+      } catch (error) {
+        console.error("Error deleting task: ", error);
+        throw error;
+      }
+    }
+  }
   
 
   const value = {
     currentUser,
     projects,
-    projectDocRef,
     getProjects,
     createProject,
     createTask,
     editProject, 
     editTask,
+    deleteTask,
+    deleteProject
   };
 
   return (

@@ -8,6 +8,7 @@ import { Form, Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { Link, useNavigate } from "react-router-dom";
 import CreateTasks from '../ManageTasks/CreateTasks';
 import EditTasks from '../ManageTasks/EditTasks';
+import DeleteTasks from '../ManageTasks/DeleteTasks';
 
 const Dashboard = () => {
     const navigate = useNavigate()
@@ -111,7 +112,7 @@ const Dashboard = () => {
                         <Card.Body>
                         {Object.values(projects).map((project, index) => (
                             <div key={project?.id || 'default_key'} style={{paddingTop: `${ index === 0 ? "0px":"10px"}`}}>
-                                {project?.id && <Card.Subtitle>{project.id.replace(/_/g, ' ')}</Card.Subtitle>}
+                                {project?.Title && <Card.Subtitle>{project.Title}</Card.Subtitle>}
                                 {project?.description && <Card.Text>{project.description}</Card.Text>}
                                 {Array.isArray(project?.Tasks) && project.Tasks.map(task => 
                                     (task.name || task.due_date) && (
@@ -139,6 +140,7 @@ const Dashboard = () => {
                     <option value="" disabled>Select an option</option>
                     <option value="CreateTask">Create Task or Project</option>
                     <option value="EditTask">Edit Task or Project</option>
+                    <option value="DeleteTask">Delete Task or Project</option>
                 </Form.Control>
                 </Col>
 
@@ -147,6 +149,9 @@ const Dashboard = () => {
                 )}
                 {selectedOption === 'EditTask' && (
                     <EditTasks />
+                )}
+                {selectedOption === 'DeleteTask' && (
+                    <DeleteTasks />
                 )}
 
             </Card.Body>

@@ -22,7 +22,7 @@ const CreateTasks = () => {
     // * Create a project in the database
     const handleCreateProject = async () => {
         try {
-            const projectID = await createProject({ title: projectTitle.replace(/\s+/g, '_'), description: projectDescription, color: 'blue' });  
+            const projectID = await createProject({ title: projectTitle, description: projectDescription, color: 'blue' });  
             console.log("Project ID: ", projectID);
             setProjectTitle('');
             setProjectDescription('');
