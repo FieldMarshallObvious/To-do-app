@@ -1,31 +1,30 @@
 // src/Dashboard.js
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import { useUser } from '../../contexts/UserContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from '../../contexts/AuthContext';
-import { useUser } from '../../contexts/UserContext';
-
+import CreateTasks from '../ManageTasks/CreateTasks';
+import EditTasks from '../ManageTasks/EditTasks';
 
 const Dashboard = () => {
     const navigate = useNavigate()
 
    const { updateDisplayName, logout } = useAuth();
-   const { getProjects, createProject } = useUser();
+   const { getProjects, createProject, createTask, projects } = useUser();
    const [displayName, setDisplayName] = useState("");
-   const [projetTitle, setProjectTitle] = useState("");
+   const [selectedOption, setSelectedOption] = useState('');
 
-   const [projects, setProjects] = useState({});
-
-    // Sign out the user
+    // * Sign out the user
     const handleSignOut = async() => {
         await logout();
         // Navigate back to home route
        navigate("/"); 
     };
 
-    // Update the display name in the database
+    // * Update the display name in the database
     const handleDisplayNameUpdate = () => {
         updateDisplayName(displayName).then(() => {
             console.log("Display Name Updated!");
@@ -34,29 +33,35 @@ const Dashboard = () => {
         });
     };
 
-    // Grab the projects fron the database
-    const handleGetProjects = async () => { 
-        try {
-          const projectData = await getProjects();
-          setProjects(projectData);
 
-          console.log("Projects: ", projects);
-        } catch (error) {
-          console.error("Error getting projects: ", error);
-        }
-    };
 
-    const handleCreateProject = async () => {
-        try {
-            const projectID = await createProject(projetTitle);  
-            console.log("Project ID: ", projectID);
-        } catch (error) {   
-            console.error("Error creating project: ", error);
-        }
-    };
-        
+    // * Get projects from database if they aren't
+    // * already in the projects state
+    useEffect(() => {
+        const handleGetProjects = async () => { 
+            try {
+              await getProjects();
     
-    // Formate the firebase timestamp to a readable date
+              console.log("Projects: ", projects);
+            } catch (error) {
+              console.error("Error getting projects: ", error);
+            }
+        };
+
+        if (projects.length === 0) {
+            handleGetProjects().then(() => {
+                console.log("Projects: ", projects);
+            }).catch((error) => {
+                console.error("Error getting projects: ", error);
+            });
+        }
+
+    }, [getProjects, projects]);
+
+    
+    
+    
+    // * Formate the firebase timestamp to a readable date
     const formatDate = (timestamp) => {
         const date = timestamp.toDate();
 
@@ -102,32 +107,16 @@ const Dashboard = () => {
                 <Card.Title>Projects</Card.Title>
                 <Row>
                 <Col xs={6} md={6} lg={6}>
-                    <div style={{paddingTop: "20px"}}>
-                        <Card.Subtitle>Create Project</Card.Subtitle>
-                        <Form.Group className="d-flex align-items-center" style={{marginTop: "20px"}}>
-                            <Form.Label className="mb-0 mr-2">Project:</Form.Label>
-                            <Form.Control 
-                                type="text" 
-                                value={projetTitle}
-                                onChange={(e) => setProjectTitle(e.target.value)}
-                                style={{marginLeft: "10px"}}
-                            />
-                        </Form.Group>
-                        <Button variant="primary" style={{marginTop: "20px"}} onClick={handleCreateProject}>
-                            Create Project
-                        </Button>
-                    </div>
-                </Col>
-                <Col xs={6} md={6} lg={6}>
                     <Card style={{marginTop: "20px"}}>
                         <Card.Body>
                         {Object.values(projects).map((project, index) => (
-                            <div key={project?.id || 'default_key'} style={{paddingTop: `${ index == 0 ? "0px":"10px"}`}}>
+                            <div key={project?.id || 'default_key'} style={{paddingTop: `${ index === 0 ? "0px":"10px"}`}}>
                                 {project?.id && <Card.Subtitle>{project.id.replace(/_/g, ' ')}</Card.Subtitle>}
+                                {project?.description && <Card.Text>{project.description}</Card.Text>}
                                 {Array.isArray(project?.Tasks) && project.Tasks.map(task => 
-                                    (task.name && task.due_date) && (
+                                    (task.name || task.due_date) && (
                                         <div key={task.name}>
-                                            {task.name} - {formatDate(task.due_date)}
+                                            {task.name} {task.due_date ? `- ${formatDate(task.due_date)}` : ""}                                        
                                         </div>
                                     )
                                 )}
@@ -135,16 +124,33 @@ const Dashboard = () => {
                         ))}
                         </Card.Body>
                     </Card>
-                    <div style={{paddingTop: "20px"}}>
-                            <Button variant="primary" onClick={handleGetProjects}>
-                                Get Projects
-                            </Button>
-                    </div>
                 </Col>
                 </Row>
                 </Card.Body>
             </Card>
         </Col>
+        </Row>
+        <Row className="mx-auto">
+            <Card>
+            <Card.Body>
+                <Col xs={6} md={6} lg={6}>
+
+                <Form.Control as="select" value={selectedOption} onChange={(e) => setSelectedOption(e.target.value)}>
+                    <option value="" disabled>Select an option</option>
+                    <option value="CreateTask">Create Task or Project</option>
+                    <option value="EditTask">Edit Task or Project</option>
+                </Form.Control>
+                </Col>
+
+                {selectedOption === 'CreateTask' && (
+                    <CreateTasks />
+                )}
+                {selectedOption === 'EditTask' && (
+                    <EditTasks />
+                )}
+
+            </Card.Body>
+            </Card>
         </Row>
         </Container>
     );
