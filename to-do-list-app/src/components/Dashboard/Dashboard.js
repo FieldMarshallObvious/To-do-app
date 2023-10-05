@@ -16,7 +16,7 @@ const Dashboard = () => {
    const { updateDisplayName, logout } = useAuth();
    const { getProjects, createProject, createTask, projects } = useUser();
    const [displayName, setDisplayName] = useState("");
-   const [selectedOption, setSelectedOption] = useState('');
+   const [selectedOption, setSelectedOption] = useState('CreateTask');
 
     // * Sign out the user
     const handleSignOut = async() => {
@@ -131,7 +131,7 @@ const Dashboard = () => {
             </Card>
         </Col>
         </Row>
-        <Row className="mx-auto">
+        <Row className="mx-auto" style={{marginTop: "20px"}}>
             <Card>
             <Card.Body>
                 <Col xs={6} md={6} lg={6}>
