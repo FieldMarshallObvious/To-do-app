@@ -16,9 +16,38 @@ functions.http('createUserDocument', async (req, res) => {
         return;
       }
   
-      // Create a new user document in Firestore
+      // Create a collection and add a document to it
+
+        const collectionName = 'projects';
+        const documentName = 'MISC';
+        const documentData = {
+            name: 'Jane Smith',
+            age: 25,
+            email: 'janesmith@example.com',
+        };
+
+        db.collection(collectionName)
+            .doc(documentName)
+            .set(documentData)
+            .then((docRef) => {
+                console.log('Document MISC created sucessfully.');
+            })
+            .catch((error) => {
+                console.error('Error creating document:', 'MISC');
+            });
+
       const userRef = db.collection('users').doc(userData.userId);
       await userRef.set(userData);
+
+      String userName = "";
+      int userAge = 0;
+
+      userName = userData.name();
+      userAge = userData.userAge();
+
+      users.append(userName);
+      users.append(userAge);
+      // createUser({name: "Shawn", age: 30}) // TODO
   
       // Send a success response
       res.status(201).send(`User document created with ID: ${userData.userId}`);
