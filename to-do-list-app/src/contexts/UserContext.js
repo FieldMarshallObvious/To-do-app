@@ -90,29 +90,26 @@ export function UserProvider ({ children }) {
       }
 
       const projectRef = collection(db, 'Users', userID, 'projects');
-      const projectDocRef = doc(projectRef, oldProjectTitle.title);
+      let projectLocalRef = projects.find((p) => p.Title === oldProjectTitle.title);
+      const projectDocRef = doc(projectRef, projectLocalRef.id);
 
       try {
         const projectSnapshot = await getDoc(projectDocRef);
 
         if ( projectSnapshot.exists ) {
           let payload = {};
-          if ( project.title ) {
-            payload.Title = project.title;
-          }
-          if ( project.tasks ) {
-            payload.Tasks = project.tasks;
-          }
-          if ( project.description ) {
-            payload.description = project.description;
-          }
-          if ( project.color ) {
-            payload.Color = project.color;
-          }
+
+          if ( project.title || oldProjectTitle.title ) payload.Title = project.title ? project.title : oldProjectTitle.title;
+          if ( project.Tasks || projectSnapshot.data().Tasks ) payload.Tasks = project.tasks ? project.tasks : projectSnapshot.data().Tasks;
+          if ( project.description || projectSnapshot.data().description ) payload.description = project.description ? project.description : projectSnapshot.data().description;
+          if ( project.color || projectSnapshot.data().color ) payload.Color = project.color ? project.color : projectSnapshot.data().Color;
+
+          console.log("Edit Payload is ", payload)
+
 
           setProjects((prevProjects) => {
             const editedProjects = prevProjects.map((p) => { 
-              if (p.id === oldProjectTitle.title) {
+              if (p.Title === oldProjectTitle.title) {
                 return { id: project.title, ...payload };
               }
               return p;
