@@ -9,6 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import CreateTasks from '../ManageTasks/CreateTasks';
 import EditTasks from '../ManageTasks/EditTasks';
 import DeleteTasks from '../ManageTasks/DeleteTasks';
+import DashboardLayout from '../DashboardLayout/DashboardLayout';
 
 const Dashboard = () => {
     const navigate = useNavigate()
@@ -75,8 +76,12 @@ const Dashboard = () => {
 
     return (
         <Container fluid className={`justify-content-center`}>
+        <Row className='mx-auto'>
+        <DashboardLayout />
+        </Row>
         <Row className="mx-auto">
         <Col xs={12} md={6} lg={4}>
+            
             <Card>
                 <Card.Body>
                 <Card.Title>User Info</Card.Title>
