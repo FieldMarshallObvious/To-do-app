@@ -10,6 +10,7 @@ import CreateTasks from '../ManageTasks/CreateTasks';
 import EditTasks from '../ManageTasks/EditTasks';
 import DeleteTasks from '../ManageTasks/DeleteTasks';
 import DashboardLayout from '../DashboardLayout/DashboardLayout';
+import DisplayProject from '../ManageTasks/DisplayProject';
 
 const Dashboard = () => {
     const navigate = useNavigate()
@@ -115,19 +116,7 @@ const Dashboard = () => {
                 <Col xs={6} md={6} lg={6}>
                     <Card style={{marginTop: "20px"}}>
                         <Card.Body>
-                        {Object.values(projects).map((project, index) => (
-                            <div key={project?.id || 'default_key'} style={{paddingTop: `${ index === 0 ? "0px":"10px"}`}}>
-                                {project?.Title && <Card.Subtitle>{project.Title}</Card.Subtitle>}
-                                {project?.description && <Card.Text>{project.description}</Card.Text>}
-                                {Array.isArray(project?.Tasks) && project.Tasks.map(task => 
-                                    (task.name || task.due_date) && (
-                                        <div key={task.name}>
-                                            {task.name} {task.due_date ? `- ${formatDate(task.due_date)}` : ""}                                        
-                                        </div>
-                                    )
-                                )}
-                            </div>
-                        ))}
+                            <DisplayProject projects={projects} />
                         </Card.Body>
                     </Card>
                 </Col>
