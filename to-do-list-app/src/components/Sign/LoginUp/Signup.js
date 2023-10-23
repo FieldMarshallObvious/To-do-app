@@ -7,6 +7,7 @@ import styles from './Signin.module.css';
 
 
 export default function Signup() {
+  const userNameRef = useRef()
   const emailRef = useRef()
   const passwordRef = useRef()
   const passwordConfirmRef = useRef()
@@ -25,7 +26,7 @@ export default function Signup() {
     try {
       setError("")
       setLoading(true)
-      await signup(emailRef.current.value, passwordRef.current.value)
+      await signup(userNameRef.current.value, emailRef.current.value, passwordRef.current.value)
       navigate("/dashboard")
     } catch (error) {
         console.log("The error was ")
@@ -43,6 +44,10 @@ export default function Signup() {
           <h2 className="text-center mb-4">Sign Up</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleSubmit} className={`${styles.formGroup}`}>
+            <Form.Group id="username">
+              <Form.Label>Username</Form.Label>
+              <Form.Control type="text" ref={userNameRef} required />
+            </Form.Group>
             <Form.Group id="email">
               <Form.Label>Email</Form.Label>
               <Form.Control type="email" ref={emailRef} required />

@@ -44,8 +44,6 @@ const Dashboard = () => {
         const handleGetProjects = async () => { 
             try {
               await getProjects();
-    
-              console.log("Projects: ", projects);
             } catch (error) {
               console.error("Error getting projects: ", error);
             }
@@ -53,7 +51,6 @@ const Dashboard = () => {
 
         if (projects.length === 0) {
             handleGetProjects().then(() => {
-                console.log("Projects: ", projects);
             }).catch((error) => {
                 console.error("Error getting projects: ", error);
             });
