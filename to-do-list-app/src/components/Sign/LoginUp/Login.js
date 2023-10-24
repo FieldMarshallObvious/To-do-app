@@ -20,9 +20,9 @@ export default function Login() {
     try {
       setError("")
       setLoading(true)
-      await login(emailRef.current.value, passwordRef.current.value)
+      await login(emailRef.current.value.trim(), passwordRef.current.value)
       navigate("/Dashboard")
-    } catch {
+    } catch (error) {
       setError(getFriendlyErrorMessage(error))
     }
 
@@ -46,7 +46,14 @@ export default function Login() {
                 <Form.Control type="password" ref={passwordRef} required />
               </Form.Group>
               <Button disabled={loading} className={`w-100 ${styles.OrangeButton}`} type="submit">
-                Log In
+              {loading ? (
+                <>
+                  <span className="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                  <span className="sr-only">Loading...</span>
+                </>
+              ) : (
+                "Log In"
+              )}
               </Button>
             </Form>
             <div className="w-100 text-center mt-3">

@@ -1,10 +1,14 @@
 import React, { Component } from 'react'
 
 export default class DemoComponent extends Component {
+    
     render() {
+        const contentOutput = this.props.content();
+        console.log('Content function output:', contentOutput);
+       // console.log('props:', this.props.content)
         return (
             <div >
-              Card-{this.props.color}  
+                {this.props.content()}
             </div>
         )
     }

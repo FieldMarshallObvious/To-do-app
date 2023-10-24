@@ -56,7 +56,12 @@ export function AuthProvider({ children }) {
   }
   
   function login(email, password) {
-    return signInWithEmailAndPassword(auth, email, password)
+    try {
+      return signInWithEmailAndPassword(auth, email, password)
+    } catch (error) {
+      console.error("Error signing in: ", error);
+      throw error;
+    }
   }
 
   function logout() {

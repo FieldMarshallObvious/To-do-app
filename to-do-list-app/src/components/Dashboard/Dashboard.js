@@ -19,9 +19,12 @@ const Dashboard = () => {
    const { getProjects, createProject, createTask, projects } = useUser();
    const [displayName, setDisplayName] = useState("");
    const [selectedOption, setSelectedOption] = useState('CreateTask');
+   const [layout, setLayout] = useState([{ i: "a", x: 0, y: 0, w: 4, h: 1 },
+                                         { i: "b", x: 0, y: 1, w: 4, h: 1 },
+                                         { i: "c", x: 10, y: 2, w: 4, h: 1 }])
 
-    // * Sign out the user
-    const handleSignOut = async() => {
+        // * Sign out the user
+        const handleSignOut = async() => {
         await logout();
         // Navigate back to home route
        navigate("/"); 
@@ -35,6 +38,11 @@ const Dashboard = () => {
             console.error("Failed to update display name", error);
         });
     };
+
+    // *Handle update to the layout
+    const handeLayoutChange = (newLayout) => {
+        setLayout(newLayout);
+    }
 
 
 
@@ -75,7 +83,7 @@ const Dashboard = () => {
     return (
         <Container fluid className={`justify-content-center`}>
         <Row className='mx-auto'>
-        <DashboardLayout />
+        <DashboardLayout projects={projects} layout={layout} updateParentLayout={handeLayoutChange}/>
         </Row>
         <Row className="mx-auto">
         <Col xs={12} md={6} lg={4}>

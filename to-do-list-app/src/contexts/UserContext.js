@@ -15,6 +15,7 @@ export function UserProvider ({ children }) {
   useEffect(() => {
     // Set up a listener for authentication state changes
     const unsubscribe = auth.onAuthStateChanged(user => {
+      setProjects([]);
       setCurrentUser(user);
     });
 

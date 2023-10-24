@@ -26,7 +26,7 @@ export default function Signup() {
     try {
       setError("")
       setLoading(true)
-      await signup(userNameRef.current.value, emailRef.current.value, passwordRef.current.value)
+      await signup(userNameRef.current.value, emailRef.current.value.trim(), passwordRef.current.value)
       navigate("/dashboard")
     } catch (error) {
         console.log("The error was ")
@@ -61,7 +61,14 @@ export default function Signup() {
               <Form.Control type="password" ref={passwordConfirmRef} required />
             </Form.Group>
             <Button disabled={loading} className={`w-100 ${styles.OrangeButton}`} type="submit">    
-              Sign Up
+            {loading ? (
+              <>
+                <span className="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                <span className="sr-only">Loading...</span>
+              </>
+            ) : (
+              "Sign Up"
+            )}
             </Button>
           </Form>
         </Card.Body>

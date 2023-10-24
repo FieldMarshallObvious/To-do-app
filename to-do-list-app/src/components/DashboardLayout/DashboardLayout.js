@@ -1,22 +1,32 @@
 import React, { Component } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import LayoutCard from "../LayoutCard/LayoutCard";
+import DisplayProject from "../ManageTasks/DisplayProject";
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 
 export default class DashboardLayout extends Component {
-    state = {
-        value: true,
-        loaded: false,
-        layout: [
-            { i: "a", x: 0, y: 0, w: 4, h: 1 },
-            { i: "b", x: 0, y: 1, w: 4, h: 1 },
-            { i: "c", x: 10, y: 2, w: 4, h: 1 }
-        ],
-        snapPointsX: [0,10],
-        snapPointsY: [0, 1, 2],
-        occupied: {"0,1": "a", "0,2": "b", "10,0": "empty", "10,1": "empty", "10,2": "c"}
-    };
+    constructor(props) {
+        super(props)
+        this.onDragStop = this.onDragStop.bind(this);
+        this.state = {
+            value: true,
+            loaded: false,
+            layout: props.layout,
+            snapPointsX: [0,10],
+            snapPointsY: [0, 1, 2],
+            occupied: {"0,1": "a", "0,2": "b", "10,0": "empty", "10,1": "empty", "10,2": "c"},
+            projects: props.projects
+        };
+    }
+
+    componentDidUpdate(prevProps)  {
+        if (this.props.projects !== prevProps.projects) {
+            this.setState({ projects: this.props.projects });
+        }
+    }
+
+
 
     getClosest = (num, arr) => {
         let curr = arr[0];
@@ -65,13 +75,6 @@ export default class DashboardLayout extends Component {
             occupiedPositions[newPos] = newItem.i; // Update occupied position
         }
 
-        // Find and update the item in your layout and set the state
-        /*const newLayout = layout.map(item => 
-            item.i === newItem.i 
-            ? { ...item, x: closestX, y: closestY } 
-            : item
-        );*/
-
         occupiedPositions = newLayout.reduce((acc, item) => {
             const positionKey = `${item.x},${item.y}`;
             acc[positionKey] = item.i;
@@ -88,6 +91,8 @@ export default class DashboardLayout extends Component {
         console.log("New Occupied Positions: ", occupiedPositions); 
         
         this.setState({ layout: newLayout , occupied: occupiedPositions});
+
+        this.props.updateParentLayout(newLayout);
     };
 
     render = () => {
@@ -115,13 +120,22 @@ export default class DashboardLayout extends Component {
         draggableCancel="input,textarea,button,select,optgroup"
         >
         <div key="a" style={{ backgroundColor: "yellow" }}>
-            <LayoutCard color={"yellow"} />
+            <LayoutCard content={() => {return this.state.projects && this.state.projects.length > 0 ? (
+                                                        <DisplayProject projects={this.state.projects} /> ) : (
+                                                        <span>Loading...</span>
+                                                        )}} />
         </div>
         <div key="b" style={{ backgroundColor: "green" }}>
-            <LayoutCard color={"green"} />
+            <LayoutCard color={"green"} content={() => {return this.state.projects && this.state.projects.length > 0 ? (
+                                                        <DisplayProject projects={this.state.projects} /> ) : (
+                                                        <span>Loading...</span>
+                                                        )}} />
         </div>
         <div key="c" style={{ backgroundColor: "red" }}>
-            <LayoutCard color={"red"} />
+            <LayoutCard color={"red"} content={() => {return this.state.projects && this.state.projects.length > 0 ? (
+                                                        <DisplayProject projects={this.state.projects} /> ) : (
+                                                        <span>Loading...</span>
+                                                        )}} />
         </div>
         </ResponsiveGridLayout>
     </div>
