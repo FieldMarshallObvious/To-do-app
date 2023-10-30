@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp } from 'react-bootstrap-icons';
 
+import styles from './CreateProjectsAndTask.module.css';
 
 function DisplayProject({ projects }) {
 
@@ -37,6 +38,9 @@ function DisplayProject({ projects }) {
             
             {/* Project Name with Collapsible Content */}
             {projects.map((project, index) => (
+                <div className='Project-heading'> 
+                    <h1>Project Name</h1>
+                    <hr></hr>
                 <div key={index}>
                   <button 
                         className="btn btn-link d-flex justify-content-between align-items-center w-100" 
@@ -59,6 +63,7 @@ function DisplayProject({ projects }) {
                             </div>
                         ))}
                     </div>
+                </div>
                 </div>
             ))}
 
