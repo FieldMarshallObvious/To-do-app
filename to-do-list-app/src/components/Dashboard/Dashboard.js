@@ -11,6 +11,7 @@ import EditTasks from '../ManageTasks/EditTasks';
 import DeleteTasks from '../ManageTasks/DeleteTasks';
 import DashboardLayout from '../DashboardLayout/DashboardLayout';
 import DisplayProject from '../ManageTasks/DisplayProject';
+import Navbar from '../NavBar/TopNavbar';
 
 const Dashboard = () => {
     const navigate = useNavigate()
@@ -82,8 +83,11 @@ const Dashboard = () => {
 
     return (
         <Container fluid className={`justify-content-center`}>
+        <Row className = "mx-auto" >
+            <Navbar/>
+        </Row>
         <Row className='mx-auto'>
-        <DashboardLayout projects={projects} layout={layout} updateParentLayout={handeLayoutChange}/>
+            <DashboardLayout projects={projects} layout={layout} updateParentLayout={handeLayoutChange}/>
         </Row>
         <Row className="mx-auto">
         <Col xs={12} md={6} lg={4}>
