@@ -38,17 +38,14 @@ function DisplayProject({ projects }) {
             
             {/* Project Name with Collapsible Content */}
             {projects.map((project, index) => (
-                <div className='Project-heading'> 
-                    <h2>{project.Title}</h2>
-                    <hr></hr>
                 <div key={index}>
                   <button 
-                        className="btn btn-link d-flex justify-content-between align-items-center w-100" 
+                        className={`btn btn-link d-flex justify-content-between align-items-center w-100 ${styles.projectHeading}`}
                         type="button" 
                         data-toggle="collapse" 
                         onClick={() => handleClick(index)}
                     >
-                        {project.Title}
+                         <h2>{project.Title}</h2>
                          { openIndex[index] ? <ChevronUp /> : <ChevronDown />}
                     </button>
                     
@@ -63,7 +60,6 @@ function DisplayProject({ projects }) {
                             </div>
                         ))}
                     </div>
-                </div>
                 </div>
             ))}
 
