@@ -39,7 +39,7 @@ function DisplayProject({ projects }) {
             {/* Project Name with Collapsible Content */}
             {projects.map((project, index) => (
                 <div className='Project-heading'> 
-                    <h1>Project Name</h1>
+                    <h2>{project.Title}</h2>
                     <hr></hr>
                 <div key={index}>
                   <button 
