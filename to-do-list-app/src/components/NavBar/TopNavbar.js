@@ -1,21 +1,39 @@
-import React from "react";
+import React, {useState} from "react";
 
-const Navbar = () => {
+import {Link} from "react-router-dom"; 
+import './TopNavbar.css';
+
+const task = {
+  due_date: new Date(), 
+  name: "Some name",
+  color: "some color"
+};
+
+export const TopNavbar = () => {
+  const [menuOpen, setMenuOpen] = useState(false)
   return (
-    <div class="pos-f-t">
-  <div class="collapse" id="navbarToggleExternalContent">
-    <div class="bg-dark p-4">
-      <h4 class="text-white">Collapsed content</h4>
-      <span class="text-muted">Toggleable via the navbar brand.</span>
+
+   <nav>
+    <Link to = "/<Website" className = "title">Settings</Link>
+    <div className = "menu" onClick={() => {
+        setMenuOpen(!menuOpen);
+    }}>
+
+      <div>Task Name: {task.name}</div>
+      <div>Due Date: {task.due_date.toString()}</div>
+      <div>Task Color: {task.color}</div>
+
+      <span></span> 
+      <span></span> 
+      <span></span> 
     </div>
-  </div>
-  <nav class="navbar navbar-dark bg-dark">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <ul className={menuOpen ? "open" : ""}>
+      <Link to = "Account">Account</Link> 
+
+</ul> 
   </nav>
-  </div>
+    
   );
 }; 
 
-export default Navbar
+export default TopNavbar
