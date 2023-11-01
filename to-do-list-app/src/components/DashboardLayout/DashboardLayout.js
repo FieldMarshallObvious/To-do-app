@@ -17,13 +17,19 @@ export default class DashboardLayout extends Component {
             snapPointsX: [0,10],
             snapPointsY: [0, 1, 2],
             occupied: {"0,1": "a", "0,2": "a", "10,0": "c", "10,1": "c", "10,2": "empty"},
-            projects: props.projects
+            projects: props.projects,
+            locked: props.locked
         };
     }
 
     componentDidUpdate(prevProps)  {
         if (this.props.projects !== prevProps.projects) {
             this.setState({ projects: this.props.projects });
+        }
+
+        if (this.props.locked !== prevProps.locked) {
+            this.setState({ locked: this.props.locked });
+            console.log("locked: ", this.state.locked);
         }
     }
 
@@ -102,7 +108,8 @@ export default class DashboardLayout extends Component {
         rowHeight={281}
         width={1200}
         margin={[45, 45, 45]}
-        onDragStop={this.onDragStop} 
+        onDragStop={this.onDragStop}
+        isDraggable={this.state.locked} 
         onLayout={(event) => {
             event.target.measure(
                 (x, y, width, height, pageX, pageY) => {

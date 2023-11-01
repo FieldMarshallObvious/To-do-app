@@ -6,12 +6,15 @@ import { useUser } from '../../contexts/UserContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { Link, useNavigate } from "react-router-dom";
+import { Lock, Unlock } from 'react-bootstrap-icons';
 import CreateTasks from '../ManageTasks/CreateTasks';
 import EditTasks from '../ManageTasks/EditTasks';
 import DeleteTasks from '../ManageTasks/DeleteTasks';
 import DashboardLayout from '../DashboardLayout/DashboardLayout';
 import DisplayProject from '../ManageTasks/DisplayProject';
 import Navbar from '../NavBar/TopNavbar';
+
+import styles from './Dashboard.module.css';
 
 const Dashboard = () => {
     const navigate = useNavigate()
@@ -23,9 +26,11 @@ const Dashboard = () => {
    const [layout, setLayout] = useState([{ i: "a", x: 0, y: 0, w: 6, h: 2 },
                                          { i: "b", x: 10, y: 0, w: 6, h: 1 },
                                          { i: "c", x: 10, y: 2, w: 6, h: 1 }])
+    const [locked, setLocked] = useState(true);
+    const [hover, setHover] = useState(false);
 
         // * Sign out the user
-        const handleSignOut = async() => {
+    const handleSignOut = async() => {
         await logout();
         // Navigate back to home route
        navigate("/"); 
@@ -45,8 +50,6 @@ const Dashboard = () => {
         setLayout(newLayout);
     }
 
-
-
     // * Get projects from database if they aren't
     // * already in the projects state
     useEffect(() => {
@@ -60,6 +63,7 @@ const Dashboard = () => {
 
         if (projects.length === 0) {
             handleGetProjects().then(() => {
+                setLocked(false);
             }).catch((error) => {
                 console.error("Error getting projects: ", error);
             });
@@ -87,7 +91,14 @@ const Dashboard = () => {
             <Navbar/>
         </Row>
         <Row className='mx-auto'>
-            <DashboardLayout projects={projects} layout={layout} updateParentLayout={handeLayoutChange}/>
+            <Row style={{justifyContent:'right'}}>
+                <Button className={`btn btn-primary ${styles.lockButton}`} onClick={() => setLocked(!locked)} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+                    {!locked ?
+                        <Lock size={30} color={hover ? 'white':'grey'}/>:<Unlock size={30} color={hover ? 'white':'grey'}/> 
+                    }
+                </Button>
+            </Row>
+            <DashboardLayout projects={projects} layout={layout} locked={locked} updateParentLayout={handeLayoutChange}/>
         </Row>
         <Row className="mx-auto">
         <Col xs={12} md={6} lg={4}>

@@ -1,0 +1,14 @@
+.lockButton {
+    height: 44px;
+    width: 53px;
+    align-items: center !important;
+    margin: 0;
+    border: 1px solid #AAA399 !important;
+    background-color: transparent;
+}
+
+.lockButton:focus,
+.lockButton.focus,
+.lockButton:hover{
+    background-color: #AAA399 !important;
+}
