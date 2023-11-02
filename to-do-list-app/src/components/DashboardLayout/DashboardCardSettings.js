@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card } from 'react-bootstrap'; // Assuming you're using React Bootstrap
+import { Card, ButtonGroup, Button } from 'react-bootstrap'; // Assuming you're using React Bootstrap
 
 const DashboardCardSettings = ({ allProjects, settings, updateSettings }) => {
   const [displayOption, setDisplayOption] = useState('projects');
@@ -58,20 +58,23 @@ const DashboardCardSettings = ({ allProjects, settings, updateSettings }) => {
         </div>
 
         {displayOption === 'projects' && (
-          <div>
+          <div style={{overflowX: "scroll"}}>
             <h3>Select Projects:</h3>
-            {allProjects.map(project => (
-              <label key={project.Title}>
-                <input
-                  type="checkbox"
-                  checked={selectedProjects.includes(project.Title)}
-                  onChange={() => handleProjectSelectionChange(project.Title)}
-                />
-                {project.Title}
-              </label>
-            ))}
+            <ButtonGroup>
+              {allProjects.map((project) => (
+                <Button
+                  key={project.Title}
+                  variant={selectedProjects.includes(project.Title) ? 'primary' : 'secondary'}
+                  onClick={() => handleProjectSelectionChange(project.Title)}
+                  active={selectedProjects.includes(project.Title)}
+                >
+                  {project.Title}
+                </Button>
+              ))}
+            </ButtonGroup>
           </div>
-        )}
+      )}
+
       </Card.Body>
   );
 };

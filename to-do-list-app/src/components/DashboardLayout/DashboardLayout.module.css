@@ -13,3 +13,8 @@
 .editCardButton:hover{
     background-color: #AAA399 !important;
 }
+
+.invisibleButton {
+    visibility: hidden;
+    pointer-events: none;
+}

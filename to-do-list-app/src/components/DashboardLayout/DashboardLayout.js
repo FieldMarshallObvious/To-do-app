@@ -203,12 +203,25 @@ export default class DashboardLayout extends Component {
                     </Row> : null
                 }
                 {/* Conditionally render DashboardCardSettings or LayoutCard based on the state */}
-                {this.state.settingsVisibility[cardKey] ? (
+                    {this.state.settingsVisibility[cardKey] ? (
+                    <div style={{paddingLeft: "10px"}}>
+                    <Row className={`mx-auto ${styles.invisibleButton}`}>
+                    <Button
+                        className={`${styles.editCardButton}`}
+                        variant="outline-secondary"
+                        onClick={() => this.toggleSettings(cardKey)}
+                    >
+                        <ThreeDots size={20}/>
+                    </Button>
+                    </Row>
+
                     <DashboardCardSettings
                         allProjects={this.state.projects}  
                         settings={this.state.cardSettings[cardKey]}
-                        updateSettings={(newSettings) => this.updatedSettings(cardKey, newSettings)} // Corrected prop name
+                        updateSettings={(newSettings) => this.updatedSettings(cardKey, newSettings)}
+                        style={{zIndex: 2}}
                     />
+                    </div>
                 ) : (
                     <LayoutCard color={cardKey} content={() => {
                         const filteredProjects = this.getFilteredProjects(cardKey);

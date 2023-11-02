@@ -49,14 +49,13 @@ function DisplayProject({ projects }) {
                          { openIndex[index] ? <ChevronUp /> : <ChevronDown />}
                     </button>
                     
-                    <div className={openIndex[index] ? "show" : "collapse"}>                        
+                    <div className={openIndex[index] ? "show" : "collapse"} style={{paddingTop: "10px"}}>                        
                         {Array.isArray(project?.Tasks) && project.Tasks.map(task => (
                             <div className="d-flex align-items-center p-3 border rounded mb-3" key={task.name}>
                                 <div className="me-3 rounded-circle" style={{ width: '20px', height: '20px', backgroundColor: '#007BFF' }}></div>
                                 <div>
                                     <h2 className="h5 mb-0">{task.name}</h2>
-                                    <p className="mb-0 text-muted"><i className="bi bi-calendar"></i> {task.due_date ? `- ${formatDate(task.due_date)}` : ""} </p>
-                                </div>
+                                    <p className="mb-0" style={{ color: task.color ? task.color : "#053DA9" }}><i className="bi bi-calendar"></i> {task.due_date ? `- ${formatDate(task.due_date)}` : ""} </p>                                </div>
                             </div>
                         ))}
                     </div>
