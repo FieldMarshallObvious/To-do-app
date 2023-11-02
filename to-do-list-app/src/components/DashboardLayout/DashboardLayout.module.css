@@ -1,0 +1,15 @@
+.editCardButton {
+    height: fit-content;
+    width: 44px;
+    align-items: center !important;
+    margin: 0;
+    background-color: transparent;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.editCardButton:focus,
+.editCardButton.focus,
+.editCardButton:hover{
+    background-color: #AAA399 !important;
+}
