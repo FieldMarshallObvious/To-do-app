@@ -12,7 +12,11 @@ import EditTasks from '../ManageTasks/EditTasks';
 import DeleteTasks from '../ManageTasks/DeleteTasks';
 import DashboardLayout from '../DashboardLayout/DashboardLayout';
 import DisplayProject from '../ManageTasks/DisplayProject';
-import Navbar from '../NavBar/TopNavbar';
+import { Navbar } from 'react-bootstrap';
+import '../NavBar/TopNavbar.js';
+import Widget from '../../utils/CalendarWidget';
+import ChartComponent from '../../utils/ChartComponents';
+import { ListTask } from 'react-bootstrap-icons';
 
 import styles from './Dashboard.module.css';
 
@@ -89,6 +93,7 @@ const Dashboard = () => {
         <Container fluid className={`justify-content-center`}>
         <Row className = "mx-auto" >
             <Navbar/>
+            <Widget />
         </Row>
         <Row className='mx-auto'>
             <Row style={{justifyContent:'right'}}>
@@ -137,6 +142,7 @@ const Dashboard = () => {
                     <Card style={{marginTop: "20px"}}>
                         <Card.Body>
                             <DisplayProject projects={projects} />
+                            <ChartComponent tasks={task} title={task.title} />
                         </Card.Body>
                     </Card>
                 </Col>

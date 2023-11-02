@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './components/LandingPage/LandingPage';
 import Login from './components/Sign/LoginUp/Login';
 import Signup from './components/Sign/LoginUp/Signup';
-import Dashboard from './components/Dashboard/Dashboard';
+import './App.css';
+import Dashboard from './components/Dashboard/Dashboard.js'
 
 function App() {
   return (
