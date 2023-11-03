@@ -22,6 +22,8 @@
     "react-grid-layout": "^1.4.2",
     "react-router-dom": "^6.16.0",
     "react-scripts": "5.0.1",
+    "react-svg": "^16.1.29",
+    "reactsvg": "^0.9.0",
     "recharts": "^2.9.2",
     "web-vitals": "^2.1.4"
   },
@@ -50,6 +52,7 @@
     ]
   },
   "devDependencies": {
-    "dpdm": "^3.14.0"
+    "dpdm": "^3.14.0",
+    "file-loader": "^6.2.0"
   }
 }
