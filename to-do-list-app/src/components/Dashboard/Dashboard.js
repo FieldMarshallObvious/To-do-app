@@ -89,6 +89,10 @@ const Dashboard = () => {
         });    
     };
 
+    const task = [
+        { name: 'Task 1', completedTasks: 400 }
+      ];
+
     return (
         <Container fluid className={`justify-content-center`}>
         <Row className = "mx-auto" style={{paddingBottom: "20px"}} >
@@ -141,7 +145,10 @@ const Dashboard = () => {
                     <Card style={{marginTop: "20px"}}>
                         <Card.Body>
                             <DisplayProject projects={projects} />
-                            <ChartComponent />
+                            <ChartComponent tasks={task}
+                                title="Tasks Completed / Time"
+                                tasksComplete="Tasks Complete"
+                                tasksRemaining="Tasks Remaining" />
                         </Card.Body>
                     </Card>
                 </Col>
