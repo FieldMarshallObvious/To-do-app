@@ -1,19 +1,118 @@
 import { React, useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp } from 'react-bootstrap-icons';
+import { ChevronDown, ChevronUp, PencilSquare } from 'react-bootstrap-icons';
+import { useUser } from '../../contexts/UserContext';
+import { Timestamp } from '../../firebase'; 
+import { ReactSVG } from 'react-svg'
+
 
 import styles from './CreateProjectsAndTask.module.css';
 
-function DisplayProject({ projects }) {
+function DisplayProject({  }) {
+    const [isEditingTask, setIsEditingTask] = useState([]);
+    const [newTaskName, setNewTaskName] = useState('');
+    const [newTaskDate, setNewTaskDate] = useState(null);
+    const [oldTaskName, setOldTaskName] = useState('');
+    const [projectName, setProjectName] = useState('');
 
+    const [oldProjectName, setOldProjectName] = useState('');
+    const [newProjectDescription, setNewProjectDescription] = useState('');
     const [openIndex, setOpenIndex] = useState([]);
+
+    const { editProject, editTask, projects } = useUser();
+
+    // * Edit project in the database
+    const handleEditProject = async () => {
+        try {
+            let newPayload = { title: (projectName.trim() === "" ? oldProjectName : projectName) };
+            let oldPayload = { title: oldProjectName };
+            
+            if ( newProjectDescription.trim() !== '' ) {
+                newPayload.description = newProjectDescription;
+            }
+            // ! This is false while I work on this functionality
+            if ( false ) {
+                newPayload.Color = "blue";
+            }
+            const projectID = await editProject(newPayload, oldPayload);  
+            console.log("Project ID: ", projectID);
+            setOldProjectName('');
+            setProjectName('');
+            setNewProjectDescription('');
+        } catch (error) {   
+            console.error("Error creating project: ", error);
+        }
+    };
+
+    // * Edit a task in the database
+    const handleEditTask = async () => {
+        try {
+            let oldTaskData = { 'name': oldTaskName };
+            let newTaskData = { 'name': (newTaskName.trim() === "" ? oldTaskName : newTaskName) };
+            
+            console.log("Old task name is", oldTaskData)
+
+            if (newTaskDate) {
+                const dateObj = new Date(newTaskDate);
+    
+                // Check if the date object is valid
+                if (isNaN(dateObj.getTime())) {
+                    console.error("The selected date is invalid.");
+                    return;  // Exit the function
+                }
+    
+                const timestamp = Timestamp.fromDate(dateObj);
+                newTaskData['due_date'] = timestamp;
+            } 
+    
+            const taskID = await editTask(projectName, oldTaskData, newTaskData);
+            console.log("Task ID: ", taskID);
+            setProjectName('');
+            setNewTaskDate('');
+            setNewTaskDate(null);
+    
+        } catch (error) {
+            console.error("Error editing task: ", error);
+        }
+    };
 
     // Update the index when the number of projects has been loaded 
     useEffect(() => {
         if (projects && projects.length) {
-            setOpenIndex(new Array(projects.length).fill(false));
+            if ( openIndex.length == 0 ) {
+                setOpenIndex(new Array(projects.length).fill(false));
+            }
+            setIsEditingTask(projects.map(project => 
+                Array.isArray(project.Tasks) ? new Array(project.Tasks.length).fill(false) : []
+            ));
         }
     }, [projects]);
 
+    const handleNameSubmit = (projectIndex, taskIndex) => {
+        handleEditTask();
+
+        setIsEditingTask(isEditingTask.map((project, pIdx) => 
+            pIdx === projectIndex ? project.map((task, tIdx) => tIdx === taskIndex ? false : task) : project
+        ));
+        // Reset the editedName state
+        setNewTaskName('');
+        setOldTaskName('');
+    };
+
+    const handleDoubleClick = (projectIndex, taskIndex, taskName, task) => {
+        setNewTaskName(taskName);
+        setOldTaskName(task.name)
+        if (task.due_date) {
+            const dueDate = task.due_date.toDate(); 
+            const formattedDate = dueDate.toISOString().split('T')[0];
+            setNewTaskDate(formattedDate);
+        } else {
+            setNewTaskDate(''); 
+        }
+
+        setIsEditingTask(isEditingTask.map((project, pIdx) => 
+            pIdx === projectIndex ? project.map((task, tIdx) => tIdx === taskIndex) : project
+        ));
+    };
 
     const formatDate = (timestamp) => {
         const date = timestamp.toDate();
@@ -46,16 +145,46 @@ function DisplayProject({ projects }) {
                         onClick={() => handleClick(index)}
                     >
                          <h2>{project.Title}</h2>
-                         { openIndex[index] ? <ChevronUp /> : <ChevronDown />}
+                         { openIndex[index] ? <ChevronUp /> : <ChevronDown /> }
                     </button>
                     
                     <div className={openIndex[index] ? "show" : "collapse"} style={{paddingTop: "10px"}}>                        
-                        {Array.isArray(project?.Tasks) && project.Tasks.map(task => (
+                        {Array.isArray(project?.Tasks) && project.Tasks.map((task, taskIndex )=> (
                             <div className="d-flex align-items-center p-3 border rounded mb-3" key={task.name}>
-                                <div className="me-3 rounded-circle" style={{ width: '20px', height: '20px', backgroundColor: '#007BFF' }}></div>
-                                <div>
-                                    <h2 className="h5 mb-0">{task.name}</h2>
-                                    <p className="mb-0" style={{ color: task.color ? task.color : "#053DA9" }}><i className="bi bi-calendar"></i> {task.due_date ? `- ${formatDate(task.due_date)}` : ""} </p>                                </div>
+                                <div className="mb-3 rounded-circle" style={{ width: '20px', height: '20px', backgroundColor: '#007BFF' }}> </div>
+                                <div className={`${styles.taskItem}`}>
+                                    { isEditingTask[index] && isEditingTask[index][taskIndex]  ?
+                                        <input
+                                            type="text"
+                                            onChange={(e) => { 
+                                                setNewTaskName(e.target.value) 
+                                                setProjectName(project.Title)
+                                            }} 
+                                            onBlur={() => handleNameSubmit(index, taskIndex)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    handleNameSubmit(index, taskIndex);
+                                                }
+                                            }}
+                                            autoFocus
+                                        />
+                                        :
+                                        <h2
+                                            className="h5 mb-0"
+                                            onDoubleClick={() => { 
+                                                handleDoubleClick(index, taskIndex, task.name, task) 
+                                            }
+                                        }
+                                        >
+                                            {task.name}
+                                        </h2>
+                                    }
+                                    <p className="mb-0" style={{ color: task.color ? task.color : "#053DA9" }}> <ReactSVG src="../../calenderIcon.svg"/> {task.due_date ? `- ${formatDate(task.due_date)}` : ""} </p>    
+                                    <PencilSquare
+                                        className={`editIcon ${styles.editIcon}`}
+                                        onClick={() => handleDoubleClick(index, taskIndex, task.name, task)}
+                                    />                            
+                                </div>
                             </div>
                         ))}
                     </div>

@@ -224,6 +224,9 @@ export function UserProvider ({ children }) {
           return;
         }
         const currentTasks = projectSnapshot.data().Tasks || [];
+
+        console.log("Current tasks are", currentTasks);
+        console.log("Old task name", oldTask.name);
   
         const taskIndex = currentTasks.findIndex(t => t.name === oldTask.name);
         if (taskIndex === -1) {

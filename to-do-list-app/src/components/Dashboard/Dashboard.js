@@ -91,9 +91,8 @@ const Dashboard = () => {
 
     return (
         <Container fluid className={`justify-content-center`}>
-        <Row className = "mx-auto" >
+        <Row className = "mx-auto" style={{paddingBottom: "20px"}} >
             <Navbar/>
-            <Widget />
         </Row>
         <Row className='mx-auto'>
             <Row style={{justifyContent:'right'}}>
@@ -142,7 +141,7 @@ const Dashboard = () => {
                     <Card style={{marginTop: "20px"}}>
                         <Card.Body>
                             <DisplayProject projects={projects} />
-                            <ChartComponent tasks={task} title={task.title} />
+                            <ChartComponent />
                         </Card.Body>
                     </Card>
                 </Col>
