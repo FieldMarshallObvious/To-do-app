@@ -90,8 +90,10 @@ const Dashboard = () => {
     };
 
     const task = [
-        { name: 'Task 1', completedTasks: 400 }
+        { name: 'Task 1', completedTasks: 2}
       ];
+
+      const tasksRemaining = 3;
 
     return (
         <Container fluid className={`justify-content-center`}>
@@ -145,10 +147,9 @@ const Dashboard = () => {
                     <Card style={{marginTop: "20px"}}>
                         <Card.Body>
                             <DisplayProject projects={projects} />
-                            <ChartComponent tasks={task}
-                                title="Tasks Completed / Time"
-                                tasksComplete="Tasks Complete"
-                                tasksRemaining="Tasks Remaining" />
+                            <ChartComponent tasks={task} title="Tasks Completed / Time" 
+                            tasksComplete={task.completedTasks} 
+                            tasksRemaining={tasksRemaining} />
                         </Card.Body>
                     </Card>
                 </Col>

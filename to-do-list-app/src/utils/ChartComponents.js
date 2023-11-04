@@ -5,7 +5,7 @@ function ChartComponent({ tasks, title, tasksComplete, tasksRemaining }) {
   const data = tasks.map((task, index) => ({
     name: task.name,
     complete: task.completedTasks,
-    remaining: tasksRemaining[index], // Assume tasksRemaining is an array
+    remaining: tasksRemaining, // Integer variable of remianing tasks.
   }));
 
   return (
