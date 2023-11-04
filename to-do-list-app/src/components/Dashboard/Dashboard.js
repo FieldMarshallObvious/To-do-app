@@ -6,7 +6,7 @@ import { useUser } from '../../contexts/UserContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { Link, useNavigate } from "react-router-dom";
-import { Lock, Unlock } from 'react-bootstrap-icons';
+import { CalendarWeek, Lock, Unlock } from 'react-bootstrap-icons';
 import CreateTasks from '../ManageTasks/CreateTasks';
 import EditTasks from '../ManageTasks/EditTasks';
 import DeleteTasks from '../ManageTasks/DeleteTasks';
@@ -19,6 +19,7 @@ import ChartComponent from '../../utils/ChartComponents';
 import { ListTask } from 'react-bootstrap-icons';
 
 import styles from './Dashboard.module.css';
+import CalendarWidget from '../../utils/CalendarWidget';
 
 const Dashboard = () => {
     const navigate = useNavigate()
@@ -94,6 +95,7 @@ const Dashboard = () => {
       ];
 
       const tasksRemaining = 3;
+        // Add more events as needed
 
     return (
         <Container fluid className={`justify-content-center`}>
@@ -161,6 +163,9 @@ const Dashboard = () => {
         <Row className="mx-auto" style={{marginTop: "20px"}}>
             <Card>
             <Card.Body>
+                <div className="App">
+                    <CalendarWidget />
+                </div>
                 <Col xs={6} md={6} lg={6}>
 
                 <Form.Control as="select" value={selectedOption} onChange={(e) => setSelectedOption(e.target.value)}>
