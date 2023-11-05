@@ -1,8 +1,9 @@
 import { React, useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp, PencilSquare } from 'react-bootstrap-icons';
+import { ChevronDown, ChevronUp, PlusCircleFill, PencilSquare, Trash } from 'react-bootstrap-icons';
 import { useUser } from '../../contexts/UserContext';
-import { Timestamp } from '../../firebase'; 
-import { ReactSVG } from 'react-svg'
+import { Timestamp } from '../../firebase';
+import CalendarIcon from './DashboardIcons/calenderIcon.svg'; 
+import ConfirmationModal from '../../utils/ConfirmationModel';
 
 
 import styles from './CreateProjectsAndTask.module.css';
@@ -13,12 +14,14 @@ function DisplayProject({  }) {
     const [newTaskDate, setNewTaskDate] = useState(null);
     const [oldTaskName, setOldTaskName] = useState('');
     const [projectName, setProjectName] = useState('');
+    const [showModal, setShowModal] = useState(false);
+
 
     const [oldProjectName, setOldProjectName] = useState('');
     const [newProjectDescription, setNewProjectDescription] = useState('');
     const [openIndex, setOpenIndex] = useState([]);
 
-    const { editProject, editTask, projects } = useUser();
+    const { editProject, editTask, deleteTask, projects } = useUser();
 
     // * Edit project in the database
     const handleEditProject = async () => {
@@ -75,6 +78,18 @@ function DisplayProject({  }) {
         }
     };
 
+    // * Delete a task in the database
+    const handleDeleteTask = async (taskNameToDelete, projectNameToDelete) => {
+        try {
+            const taskID = await deleteTask(taskNameToDelete, projectNameToDelete);
+            console.log("Task ID: ", taskID);
+        } catch (error) {
+            console.error("Error deleting task: ", error);
+        }
+        setShowModal(false);
+    };
+
+
     // Update the index when the number of projects has been loaded 
     useEffect(() => {
         if (projects && projects.length) {
@@ -100,7 +115,8 @@ function DisplayProject({  }) {
 
     const handleDoubleClick = (projectIndex, taskIndex, taskName, task) => {
         setNewTaskName(taskName);
-        setOldTaskName(task.name)
+        setOldTaskName(task.name);
+        console.log("Handle double click task: ", task)
         if (task.due_date) {
             const dueDate = task.due_date.toDate(); 
             const formattedDate = dueDate.toISOString().split('T')[0];
@@ -132,9 +148,17 @@ function DisplayProject({  }) {
         console.log("New Open Index: ", openIndex)
     };
 
+    const handleShowModal = () => {
+        setShowModal(true);
+      };
+    
+    const handleCloseModal = () => {
+    setShowModal(false);
+    };
+
+
     return (
         <div className="container mt-5">
-            
             {/* Project Name with Collapsible Content */}
             {projects.map((project, index) => (
                 <div key={index}>
@@ -179,14 +203,31 @@ function DisplayProject({  }) {
                                             {task.name}
                                         </h2>
                                     }
-                                    <p className="mb-0" style={{ color: task.color ? task.color : "#053DA9" }}> <ReactSVG src="../../calenderIcon.svg"/> {task.due_date ? `- ${formatDate(task.due_date)}` : ""} </p>    
+                                    <p className="mb-0" style={{ color: task.color ? task.color : "#053DA9" , display: "flex"}}> 
+                                        <img src={CalendarIcon}/>
+                                        <span style={{paddingLeft: "5px"}}>{task.due_date ? `${formatDate(task.due_date)}` : ""}</span> 
+                                    </p>    
                                     <PencilSquare
                                         className={`editIcon ${styles.editIcon}`}
                                         onClick={() => handleDoubleClick(index, taskIndex, task.name, task)}
-                                    />                            
+                                    />          
+                                    <Trash 
+                                        className={`editIcon ${styles.editIcon}`}
+                                        onClick={() => { 
+                                            handleShowModal()
+                                        }} 
+                                    />                  
                                 </div>
+                                <ConfirmationModal showModal={showModal}  
+                                       handleCloseModal={handleCloseModal} 
+                                       handleDanger={() => handleDeleteTask(task.name, project.Title)}
+                                       ModelTitle={"Confirm Deletion"}
+                                       ModelBody={"Are you sure you want to delete this task?"} 
+                                       SecondaryText={"Cancel"}
+                                       DangerText={"Delete"}/>
                             </div>
                         ))}
+                        <PlusCircleFill color='#F0AF4D'/>
                     </div>
                 </div>
             ))}
