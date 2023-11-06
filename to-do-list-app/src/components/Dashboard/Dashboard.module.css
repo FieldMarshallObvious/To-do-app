@@ -12,3 +12,20 @@
 .lockButton:hover{
     background-color: #AAA399 !important;
 }
+
+.createProjectButton {
+    height: 44px;
+    width: fit-content;
+    align-items: center !important;
+    color: #AAA399;
+    margin: 0;
+    margin-right: 20px !important;
+    border: 1px solid #AAA399 !important;
+    background-color: transparent;
+}
+
+.createProjectButton:focus,
+.createProjectButton.focus,
+.createProjectButton:hover{
+    background-color: #AAA399 !important;
+}

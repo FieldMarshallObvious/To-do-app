@@ -27,6 +27,7 @@ const Dashboard = () => {
    const { updateDisplayName, logout } = useAuth();
    const { getProjects, createProject, createTask, projects } = useUser();
    const [displayName, setDisplayName] = useState("");
+   const [showProjectModal, setShowProjectModal] = useState(false);
    const [selectedOption, setSelectedOption] = useState('CreateTask');
    const [layout, setLayout] = useState([{ i: "a", x: 0, y: 0, w: 6, h: 2 },
                                          { i: "b", x: 10, y: 0, w: 6, h: 1 },
@@ -76,20 +77,6 @@ const Dashboard = () => {
 
     }, [getProjects, projects]);
 
-    
-    
-    
-    // * Formate the firebase timestamp to a readable date
-    const formatDate = (timestamp) => {
-        const date = timestamp.toDate();
-
-        return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });    
-    };
-
     const task = [
         { name: 'Task 1', completedTasks: 2}
       ];
@@ -104,14 +91,15 @@ const Dashboard = () => {
         </Row>
         <Row className='mx-auto'>
             <Row style={{justifyContent:'right'}}>
+                <Button className={`btn btn-primary ${styles.createProjectButton}`} onClick={() => setShowProjectModal(true)}> Create Project </Button>
                 <Button className={`btn btn-primary ${styles.lockButton}`} onClick={() => setLocked(!locked)} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
                     {!locked ?
                         <Lock size={30} color={hover ? 'white':'grey'}/>:<Unlock size={30} color={hover ? 'white':'grey'}/> 
                     }
                 </Button>
             </Row>
-            <DashboardLayout projects={projects} layout={layout} locked={locked} updateParentLayout={handeLayoutChange}/>
-        </Row>
+            <DashboardLayout projects={projects} layout={layout} locked={locked} showProjectModal={showProjectModal}  setShowProjectModal={setShowProjectModal} updateParentLayout={handeLayoutChange}/>
+        </Row> 
         <Row className="mx-auto">
         <Col xs={12} md={6} lg={4}>
             

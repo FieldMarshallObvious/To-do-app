@@ -44,7 +44,8 @@ export default class DashboardLayout extends Component {
                     displayOption: "projects",
                     selectedProjects: ["all"]
                 }
-            }
+            },
+            showProjectModal: this.props.showProjectModal,
         };
     }
 
@@ -63,9 +64,10 @@ export default class DashboardLayout extends Component {
                     c: false
                 }});
              }
-            
-            console.log("Card setting visibility: ", this.state.settingsVisibility);
-            
+        }
+
+        if ( this.props.showProjectModal !== prevProps.showProjectModal) {
+            this.setState({ showProjectModal: this.props.showProjectModal });
         }
     }
 
@@ -77,11 +79,12 @@ export default class DashboardLayout extends Component {
         if (selectedProjects.includes('all')) {
           return projects;
         }
-      
         // Filter projects based on selected titles.
-        return projects.filter(project => 
-          selectedProjects.includes(project.Title)
+        const filteredProjects = projects.filter(project => 
+            selectedProjects.includes(project.Title)
         );
+
+        return filteredProjects;
       };
 
     updatedSettings = (cardKey, newSettings) => {
@@ -93,9 +96,6 @@ export default class DashboardLayout extends Component {
             }
           }
         }));
-
-        console.log("Key is: ", cardKey, "Selected Projects: ", this.state.cardSettings[cardKey].selectedProjects);
-
     }
 
     toggleSettings = (card) => {
@@ -227,7 +227,10 @@ export default class DashboardLayout extends Component {
                         const filteredProjects = this.getFilteredProjects(cardKey);
                         return this.state.projects && this.state.projects.length > 0 ? (
                             filteredProjects.length > 0 ? (
-                                <DisplayProject projects={filteredProjects} />
+                                <DisplayProject projects={filteredProjects} 
+                                                showProjectModal={this.state.showProjectModal} 
+                                                setShowProjectModal={this.props.setShowProjectModal} 
+                                                cardKey={cardKey}/>
                             ) : ( <span>No projects selected</span>  )
                         ) : (
                             <span>Loading...</span>
