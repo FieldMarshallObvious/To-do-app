@@ -1,26 +1,29 @@
 import { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
-function ProjectModal({ show, onHide, onCreateProject, createProject }) {
-  const [projectTitle, setProjectTitle] = useState('');
-  const [projectDescription,  setProjectDescription] = useState('');
+function ProjectModal({ show, onHide, onCreateProject = null, createProject = null, isEditProject=false, editProject=null, onEditProject=null, oldProjectTitle = '', oldProjectDescription = '' }) {
+  const [projectTitle, setProjectTitle] = useState( oldProjectTitle );
+  const [projectDescription,  setProjectDescription] = useState(oldProjectDescription);
   const [projectColor, setProjectColor] = useState('#0057FF'); // Default color
 
-  // You would call this function when the modal's form is submitted
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent the default form submit action
-    onCreateProject(createProject, projectTitle, projectDescription, projectColor);
-    // Reset State
+    e.preventDefault(); 
+    if ( isEditProject && editProject) {
+      onEditProject(editProject, projectTitle, oldProjectTitle, projectDescription, projectColor);
+    }
+    else if ( onCreateProject && createProject ) {
+      onCreateProject(createProject, projectTitle, projectDescription, projectColor);
+    }
     setProjectTitle('');
     setProjectDescription('');
     setProjectColor('#0057FF'); 
-    onHide(); // Hide the modal
+    onHide(); 
   };
 
   return (
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Add New Task</Modal.Title>
+        <Modal.Title>{isEditProject ? `Edit Project ${oldProjectTitle}` : `Create new Project`}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>

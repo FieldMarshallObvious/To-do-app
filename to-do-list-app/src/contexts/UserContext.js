@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { auth, db } from '../firebase'; // Import initialized Firebase
 import { collection, doc, getDoc, setDoc, getDocs, addDoc, updateDoc, arrayUnion, deleteDoc } from 'firebase/firestore';
 
-const UserContext = React.createContext();
+export const UserContext = React.createContext();
 
 export function useUser() {
   return useContext(UserContext);
@@ -11,6 +11,20 @@ export function useUser() {
 export function UserProvider ({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [projects, setProjects] = useState([]);
+  const [cardSettings, setCardSettings] = useState({
+      "a": {
+          displayOption: "projects",
+          selectedProjects: ["all"]
+      },
+      "b": {
+          displayOption: "projects",
+          selectedProjects: ["all"]
+      },
+      "c": {
+          displayOption: "projects",
+          selectedProjects: ["all"]
+      }
+});
 
   useEffect(() => {
     // Set up a listener for authentication state changes
@@ -119,6 +133,25 @@ export function UserProvider ({ children }) {
             return editedProjects;
           });
 
+          // * Iterate over previous state to to update card settings project
+          setCardSettings((prevSettings) => {
+            let editedSettings = {...prevSettings};
+            
+            Object.keys(prevSettings).forEach((key) => {
+              if (prevSettings[key].selectedProjects.includes(oldProjectTitle.title)) {
+                editedSettings[key] = {
+                  ...prevSettings[key],
+                  selectedProjects: prevSettings[key].selectedProjects.map((p) => 
+                    p === oldProjectTitle.title ? project.title : p
+                  )
+                };
+              }
+            });
+          
+            // Return the edited settings
+            return editedSettings;
+          });
+
           await setDoc(projectDocRef, payload);
           return project;
         }
@@ -148,6 +181,25 @@ export function UserProvider ({ children }) {
         }
         await deleteDoc(projectDocRef);
         setProjects((prevProjects) => prevProjects.filter((p) => p.Title !== project));
+
+        // * Iterate over previous state to remove project card settings
+        setCardSettings((prevSettings) => {
+          let editedSettings = {...prevSettings};
+          
+          Object.keys(prevSettings).forEach((key) => {
+            if (prevSettings[key].selectedProjects.includes(project)) {
+              editedSettings[key] = {
+                ...prevSettings[key],
+                selectedProjects: prevSettings[key].selectedProjects.map((p) => 
+                  p.Title !== project
+                )
+              };
+            }
+          });
+        
+          // Return the edited settings
+          return editedSettings;
+        });
         return projectDocRef.id;
       } catch (error) {
         console.error("Error deleting project: ", error);
@@ -312,6 +364,8 @@ export function UserProvider ({ children }) {
   const value = {
     currentUser,
     projects,
+    cardSettings,
+    setCardSettings,
     getProjects,
     createProject,
     createTask,

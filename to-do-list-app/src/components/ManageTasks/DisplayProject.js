@@ -11,11 +11,12 @@ import { handleCreateProject,
          handleCreateTask, 
          handleEditProject, 
          handleEditTask, 
-         handleDeleteTask } from '../../utils/TaskUtils';
+         handleDeleteTask, handleDeleteProject } from '../../utils/TaskUtils';
+import { Col } from 'react-bootstrap';
 
 import styles from './CreateProjectsAndTask.module.css';
 
-function DisplayProject({ showProjectModal, setShowProjectModal, projects, cardKey }) {
+function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEditing }) {
     const [isEditingTask, setIsEditingTask] = useState([]);
     const [newTaskName, setNewTaskName] = useState('');
     const [newTaskDate, setNewTaskDate] = useState(null);
@@ -24,8 +25,10 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, cardK
     const [showTaskModal, setShowTaskModal] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [openIndex, setOpenIndex] = useState([]);
+    const [showProjectModalEdit, setShowProjectModalEdit] = useState(false);
+    const [showProjectDelete, setShowProjectDelete] = useState(false);
 
-    const { createProject, createTask, editProject, editTask, deleteTask } = useUser();
+    const { createProject, createTask, editProject, editTask, deleteTask, deleteProject } = useUser();
 
     const handleNameSubmit = (projectIndex, taskIndex) => {
         handleEditTask(editTask, oldTaskName, newTaskName, newTaskDate, projectName);
@@ -73,10 +76,10 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, cardK
 
     // Update the index when the number of projects has been loaded 
     useEffect(() => {
-        console.log("Key: ", cardKey, "Projects: ", projects)
         if (projects && projects.length) {
-            
-            setOpenIndex(new Array(projects.length).fill(false));
+            if ( openIndex.length == 0 && projects.length != 0) {
+                setOpenIndex(new Array(projects.length).fill(false));
+            }
 
             setIsEditingTask(projects.map(project => 
                 Array.isArray(project.Tasks) ? new Array(project.Tasks.length).fill(false) : []
@@ -96,16 +99,25 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, cardK
                         onClick={() => handleClick(index)}
                     >
                          <h2>{project.Title}</h2>
-                         <PencilSquare
-                            className={`editIcon ${styles.editIcon}`}
-                            onClick={() => console.log("click")}
-                        />          
-                        <Trash 
-                            className={`editIcon ${styles.editIcon}`}
-                            onClick={() => { 
-                                handleShowModal()
-                            }} 
-                        /> 
+                         { isEditing ? 
+                            <>
+                            <PencilSquare
+                                className={`editIcon ${styles.editIcon}`}
+                                onClick={() => 
+                                    setShowProjectModalEdit(true)
+                                }
+                                style={{position: "absolute", right: "150px"}}
+                            />   
+                            <Trash 
+                                className={`editIcon ${styles.editIcon}`}
+                                onClick={() => { 
+                                    setShowProjectDelete(true)
+                                }} 
+                                style={{position: "absolute", right:"100px"}}
+                            /> 
+                            </>
+                            : <></>
+                        }
                          { openIndex[index] ? <ChevronUp /> : <ChevronDown /> }
                     </button>
                     
@@ -192,14 +204,41 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, cardK
                                 }}/>
                         </div>
                     </div>
+
+                    {/* Create Project Modal */}
+                    <ProjectModal 
+                        show={showProjectModal} 
+                        onHide={() => setShowProjectModal(false)} 
+                        onCreateProject={handleCreateProject}
+                        createProject={createProject}
+                    />
+
+                    {/* Edit Project Modal */}
+                    <ProjectModal 
+                        show={showProjectModalEdit} 
+                        onHide={() => setShowProjectModal(false)} 
+                        onEditProject={handleEditProject}
+                        isEditProject={true}
+                        editProject={editProject}
+                        oldProjectTitle={project.Title}
+                        oldProjectDescription={project.Description}
+                    />
+
+                    {/* Delete Project Modal */}
+                    <ConfirmationModal showModal={showProjectDelete}  
+                                            handleCloseModal={handleCloseModal} 
+                                            handleDanger={() => { 
+                                                                        handleDeleteProject(deleteProject, project.Title) 
+                                                                        setShowProjectDelete(false)
+                                                                    }}
+                                            ModelTitle={"Confirm Deletion"}
+                                            ModelBody={"Are you sure you want to delete this project?"} 
+                                            SecondaryText={"Cancel"}
+                                            DangerText={"Delete"}
+                    />
                 </div>
             ))}
-            <ProjectModal 
-                show={showProjectModal} 
-                onHide={() => setShowProjectModal(false)} 
-                onCreateProject={handleCreateProject}
-                createProject={createProject}
-            />
+  
         </div>
     );
 }

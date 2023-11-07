@@ -7,6 +7,7 @@ import { ThreeDots } from "react-bootstrap-icons";
 import Card from '@mui/material/Card';
 import styles from './DashboardLayout.module.css';
 import DashboardCardSettings from './DashboardCardSettings';
+import { UserContext } from "../../contexts/UserContext";
 
 
 
@@ -14,6 +15,8 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 
 
 export default class DashboardLayout extends Component {
+    static contextType = UserContext;
+
     constructor(props) {
         super(props)
         this.onDragStop = this.onDragStop.bind(this);
@@ -31,22 +34,12 @@ export default class DashboardLayout extends Component {
                 b: false,
                 c: false
             },
-            cardSettings: {
-                a: {
-                    displayOption: "projects",
-                    selectedProjects: ["all"]
-                },
-                b: {
-                    displayOption: "projects",
-                    selectedProjects: ["all"]
-                },
-                c: {
-                    displayOption: "projects",
-                    selectedProjects: ["all"]
-                }
-            },
             showProjectModal: this.props.showProjectModal,
         };
+    }
+
+    componentDidMount() {
+        this.setState({ ... this.state, context: this.context });
     }
 
     componentDidUpdate(prevProps)  {
@@ -72,8 +65,8 @@ export default class DashboardLayout extends Component {
     }
 
     getFilteredProjects = (cardKey) => {
-        const { projects, cardSettings } = this.state;
-        const selectedProjects = cardSettings[cardKey].selectedProjects;
+        const { projects } = this.state;
+        const selectedProjects = this.context.cardSettings[cardKey].selectedProjects;
 
         // If 'all' is selected, return all projects.
         if (selectedProjects.includes('all')) {
@@ -88,13 +81,11 @@ export default class DashboardLayout extends Component {
       };
 
     updatedSettings = (cardKey, newSettings) => {
-        this.setState(prevState => ({
-          cardSettings: {
-            ...prevState.cardSettings,
+        this.context.setCardSettings(prevState => ({
+            ...prevState,
             [cardKey]: {
               ...newSettings
             }
-          }
         }));
     }
 
@@ -217,7 +208,7 @@ export default class DashboardLayout extends Component {
 
                     <DashboardCardSettings
                         allProjects={this.state.projects}  
-                        settings={this.state.cardSettings[cardKey]}
+                        settings={this.context.cardSettings[cardKey]}
                         updateSettings={(newSettings) => this.updatedSettings(cardKey, newSettings)}
                         style={{zIndex: 2}}
                     />
@@ -230,7 +221,7 @@ export default class DashboardLayout extends Component {
                                 <DisplayProject projects={filteredProjects} 
                                                 showProjectModal={this.state.showProjectModal} 
                                                 setShowProjectModal={this.props.setShowProjectModal} 
-                                                cardKey={cardKey}/>
+                                                isEditing={this.state.locked}/>
                             ) : ( <span>No projects selected</span>  )
                         ) : (
                             <span>Loading...</span>

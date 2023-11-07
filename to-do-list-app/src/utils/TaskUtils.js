@@ -18,7 +18,10 @@ export const handleCreateTask = async (createTask, taskTitle, color, projectTitl
         let taskData = { 'name': taskTitle };
 
         if (taskDate) {
-            const dateObj = new Date(taskDate);
+            let dateObj = new Date(taskDate + 'T00:00:00');
+
+            dateObj = new Date(dateObj.getUTCFullYear(), dateObj.getUTCMonth(), dateObj.getUTCDate(), 
+                              dateObj.getUTCHours(), dateObj.getUTCMinutes(), dateObj.getUTCSeconds())
 
             // Check if the date object is valid
             if (isNaN(dateObj.getTime())) {
@@ -68,8 +71,6 @@ export const handleEditTask = async (editTask, oldTaskName, newTaskName, newTask
         let oldTaskData = { 'name': oldTaskName };
         let newTaskData = { 'name': (newTaskName.trim() === "" ? oldTaskName : newTaskName) };
         
-        console.log("Old task name is", oldTaskData)
-
         if (newTaskDate) {
             const dateObj = new Date(newTaskDate);
 
@@ -87,6 +88,16 @@ export const handleEditTask = async (editTask, oldTaskName, newTaskName, newTask
         console.log("Task ID: ", taskID);
     } catch (error) {
         console.error("Error editing task: ", error);
+    }
+};
+
+// * Delete a project in the database
+export const handleDeleteProject = async (deleteProject, projectTitle) => {
+    try {
+        const projectID = await deleteProject(projectTitle);
+        console.log("Project ID: ", projectID);
+    } catch (error) {
+        console.error("Error deleting project: ", error);
     }
 };
 
