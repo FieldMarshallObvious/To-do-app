@@ -182,24 +182,6 @@ export function UserProvider ({ children }) {
         await deleteDoc(projectDocRef);
         setProjects((prevProjects) => prevProjects.filter((p) => p.Title !== project));
 
-        // * Iterate over previous state to remove project card settings
-        setCardSettings((prevSettings) => {
-          let editedSettings = {...prevSettings};
-          
-          Object.keys(prevSettings).forEach((key) => {
-            if (prevSettings[key].selectedProjects.includes(project)) {
-              editedSettings[key] = {
-                ...prevSettings[key],
-                selectedProjects: prevSettings[key].selectedProjects.map((p) => 
-                  p.Title !== project
-                )
-              };
-            }
-          });
-        
-          // Return the edited settings
-          return editedSettings;
-        });
         return projectDocRef.id;
       } catch (error) {
         console.error("Error deleting project: ", error);
