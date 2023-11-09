@@ -20,6 +20,7 @@ import { ListTask } from 'react-bootstrap-icons';
 
 import styles from './Dashboard.module.css';
 import CalendarWidget from '../../utils/CalendarWidget';
+import TopNavbar from '../NavBar/TopNavbar.js';
 
 const Dashboard = () => {
     const navigate = useNavigate()
@@ -35,6 +36,11 @@ const Dashboard = () => {
     const [locked, setLocked] = useState(true);
     const [hover, setHover] = useState(false);
 
+    //Test task, navbar needs one passed to it
+    const testTask = {
+        name: "Test Task ",
+        due_date: new Date('2023-12-31'),
+      };
         // * Sign out the user
     const handleSignOut = async() => {
         await logout();
@@ -87,7 +93,7 @@ const Dashboard = () => {
     return (
         <Container fluid className={`justify-content-center`}>
         <Row className = "mx-auto" style={{paddingBottom: "20px"}} >
-            <Navbar/>
+            <TopNavbar initialTask={testTask} />
         </Row>
         <Row className='mx-auto'>
             <Row style={{justifyContent:'right'}}>

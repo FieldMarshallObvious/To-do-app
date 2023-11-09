@@ -1,8 +1,9 @@
 .active{
-    background-color: #1d4ed8;
+    background-color: rgba(0, 123, 255, 0.8); 
 }
 
 nav {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -73,7 +74,7 @@ nav .menu span {
     position: absolute;
     top: 15px;
     right: 15px;
-    z-index: 1001;  /* Ensures the button is always clickable */
+    z-index: 1001;  
   }
   
   .offcanvas-toggle-btn .rotate {
@@ -112,3 +113,11 @@ nav .menu span {
         margin: 0.2rem 0.5rem;
     }
 }
+
+  
+  /* Ensure to complete with your own additional styling */
+  
+
+  
+  
+  

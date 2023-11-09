@@ -1,43 +1,71 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import Settings from '../Settings.js';
+import React, { useState, useEffect } from "react";
+import Settings from '../Settings/Settings.js';
 import styles from './TopNavbar.css'; 
-import settingsIcon from './image.svg';
+import settingsIcon from './settings-icon.svg';
+import PropTypes from "prop-types"; // Import PropTypes
 
-const task = {
-  due_date: new Date(),
-  name: "Some name",
-  color: "some color"
-};
-
-export const TopNavbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+export const TopNavbar = ({ initialTask }) => {
+  
+  const [task, setTask] = useState(initialTask);
   const [isSettingsVisible, setSettingsVisible] = useState(false);
 
+  const toggleSettings = () => {
+    setSettingsVisible(prev => !prev);
+  };
+
+  const formatDate = (date) => {
+    return date ? new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric', month: 'long', day: 'numeric'
+    }) : "No due date";
+  };
+
+  useEffect(() => {
+    const taskUpdateInterval = setInterval(() => {
+      // Just checking that the task can update
+      setTask({
+        name: "Updated Task ",
+        due_date: new Date(),
+      });
+    }, 5000);
+
+    return () => clearInterval(taskUpdateInterval);
+  }, []);
+
+
   return (
-    <nav>
-      <Link to="/settings" className={`${styles.TopNavbar}`}>Settings</Link>
-      <div className={`${styles.TopNavbar}`} onClick={() => setMenuOpen(!menuOpen)}>
-        <div>Task Name: {task.name} Due Date: {task.due_date.toString()}</div>
-        <div>Task Color: {task.color}</div>
-      </div>
-
-      <div className={`${styles.TopNavbar}`} style={{ position: "fixed", top: "15px", right: '15px', justifyContent: 'right' }}>
-        <img src={settingsIcon} alt="Settings Icon" className={`${styles.TopNavbar}`} onClick={() => setSettingsVisible(true)} />
-      </div>
-
-      <div className={`col-${isSettingsVisible ? '4' : '0'} offcanvascol`}>
-        <div className={`offcanvasoffcanvas-end ${isSettingsVisible ? 'show' : ''}`} tabIndex="-1" id="offcanvasExample">
-          <div className={`${styles.TopNavbar}`}>
-            <h5 className={`${styles.TopNavbar}`}>Settings</h5>
-            <button type="button" className={`${styles.TopNavbar}`} data-bs-dismiss={`${styles.TopNavbar}`} aria-label={`${styles.TopNavbar}`} onClick={() => setSettingsVisible(false)}></button>
-          </div>
-          <div className={`${styles.TopNavbar}`}>
-          </div>
+    <>
+      <nav className={styles.TopNavbar}>
+        <div className={styles.TaskInfo}>
+          <span>Task Name: {task.name}</span>
+          <span>Due Date: {formatDate(task.due_date)}</span>
         </div>
-      </div>
-    </nav>
-  );
-};
 
-export default TopNavbar;
+        <div className={styles.Spacer} />
+
+        <div className={styles.SettingsIconContainer} onClick={toggleSettings}>
+          <img src={settingsIcon} alt="Settings Icon" />
+        </div>
+      </nav>
+
+      {isSettingsVisible && (
+        <div>
+          <div>
+            <Settings />
+          </div>
+          <button onClick={toggleSettings} className={styles.CloseButton}>
+            Close Settings
+          </button>
+        </div>
+      )}
+    </>
+  );
+  };
+
+  TopNavbar.propTypes = {
+    initialTask: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      due_date: PropTypes.instanceOf(Date).isRequired,
+    }),
+  };
+
+  export default TopNavbar;
