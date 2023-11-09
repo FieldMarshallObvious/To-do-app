@@ -1,0 +1,29 @@
+import React from 'react';
+
+function DateTile({ date, view }) {
+  const tasks = [
+    { name: 'Task 1', startDate: new Date(2023, 10, 1), endDate: new Date(2023, 10, 3) },
+    { name: 'Task 2', startDate: new Date(2023, 10, 5), endDate: new Date(2023, 10, 6) },
+    // Add more tasks
+  ];
+
+  // Find tasks due on the date
+  const dueTasks = tasks.filter(task => {
+    return task.startDate <= date && date <= task.endDate;
+  });
+
+  return (
+    <div className="date-tile">
+      <div>{date.getDate()}</div>
+      {dueTasks.length > 0 && (
+        <ul className="due-tasks-list">
+          {dueTasks.map(task => (
+            <li key={task.name}>{task.name}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+export default DateTile;

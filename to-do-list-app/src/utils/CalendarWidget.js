@@ -4,6 +4,7 @@ import 'react-calendar/dist/Calendar.css';
 
 function CalendarWidget() {
   const [date, setDate] = useState(new Date());
+  const [selectedTasks, setSelectedTasks] = useState([]);
 
   const tasks = [
     { name: 'Task 1', startDate: new Date(2023, 10, 1), endDate: new Date(2023, 10, 3) },
@@ -11,16 +12,44 @@ function CalendarWidget() {
     // Add more tasks
   ];
 
-  const events = tasks.map(task => ({
-    title: task.name,
-    start: task.startDate,
-    end: task.endDate,
-  }));
+  const tileContent = ({ date }) => {
+    const isDueDate = tasks.some(task => date >= task.startDate && date <= task.endDate);
+    return isDueDate ? <div className="red-circle"></div> : null;
+  };
+
+  const handleDateClick = date => {
+    const dueTasks = tasks.filter(task => date >= task.startDate && date <= task.endDate);
+    setSelectedTasks(dueTasks);
+  };
 
   return (
     <div>
-      <h2>Calendar with Tasks</h2>
-      <Calendar value={date} onChange={setDate} events={events} />
+      <Calendar value={date} onChange={setDate} onClickDay={handleDateClick} tileContent={tileContent} />
+      {selectedTasks.length > 0 && (
+        <div>
+          <h3>Tasks Due on {selectedTasks[0].startDate.toLocaleDateString()}</h3>
+          <ul>
+            {selectedTasks.map(task => (
+              <li key={task.name}>{task.name}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <style>
+        {`
+          .react-calendar__tile--has-tasks {
+            background-color: red;
+            border-radius: 50%;
+          }
+
+          .red-circle {
+            width: 10px;
+            height: 10px;
+            background-color: red; /* You can change this to red if you want the circle to be red */
+            border-radius: 50%;
+          }
+        `}
+      </style>
     </div>
   );
 }
