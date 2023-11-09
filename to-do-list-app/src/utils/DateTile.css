@@ -1,0 +1,16 @@
+.has-tasks {
+    position: relative;
+  }
+  
+  .has-tasks::before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #FF5733; /* Choose your circle color */
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+  }

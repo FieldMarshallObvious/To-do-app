@@ -13,7 +13,7 @@ import DeleteTasks from '../ManageTasks/DeleteTasks';
 import DashboardLayout from '../DashboardLayout/DashboardLayout';
 import DisplayProject from '../ManageTasks/DisplayProject';
 import { Navbar } from 'react-bootstrap';
-import '../NavBar/TopNavbar.js';
+import '../NavBar/TopNavbar';
 import Widget from '../../utils/CalendarWidget';
 import ChartComponent from '../../utils/ChartComponents';
 import { ListTask } from 'react-bootstrap-icons';
@@ -143,7 +143,7 @@ const Dashboard = () => {
                     <Card style={{marginTop: "20px"}}>
                         <Card.Body>
                             <DisplayProject projects={projects} />
-                            <ChartComponent tasks={task} title="Tasks Completed / Time" 
+                            <ChartComponent tasks={task} title="Tasks Completed / Remaining" 
                             tasksComplete={task.completedTasks} 
                             tasksRemaining={tasksRemaining} />
                         </Card.Body>
@@ -157,8 +157,13 @@ const Dashboard = () => {
         <Row className="mx-auto" style={{marginTop: "20px"}}>
             <Card>
             <Card.Body>
-                <div className="App">
-                    <CalendarWidget />
+            <div>
+                <h2>Calendar with Tasks</h2>
+                <CalendarWidget
+                    tileContent={({ date, view }) => (
+                    <CalendarWidget date={date} view={view} />
+                    )}
+                />
                 </div>
                 <Col xs={6} md={6} lg={6}>
 
