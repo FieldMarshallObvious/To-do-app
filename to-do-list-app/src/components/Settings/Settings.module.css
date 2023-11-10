@@ -1,0 +1,27 @@
+.Sidebar {
+    position: fixed;
+    top: 52px; 
+    right: 0; 
+    height: calc(100vh - 52px - 50px);
+    width: 75px; 
+    background-color: rgba(173, 216, 230, 0.5); 
+    padding: 10px; 
+    box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1); 
+    z-index: 1000; 
+    overflow-y: auto; 
+    font-family: 'Helvetica Neue', sans-serif; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: flex-end; 
+}
+
+.LogoutButton {
+    margin-top: 10px; 
+    padding: 5px 10px; 
+}
+
+@media (max-width: 768px) {
+    .Sidebar {
+        width: 200px; 
+    }
+}

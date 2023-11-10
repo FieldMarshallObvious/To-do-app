@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Settings from '../Settings/Settings.js';
-import styles from './TopNavbar.css'; 
+import styles from './TopNavbar.module.css'; 
 import settingsIcon from './settings-icon.svg';
 import PropTypes from "prop-types"; // Import PropTypes
 
@@ -43,19 +43,16 @@ export const TopNavbar = ({ initialTask }) => {
         <div className={styles.Spacer} />
 
         <div className={styles.SettingsIconContainer} onClick={toggleSettings}>
-          <img src={settingsIcon} alt="Settings Icon" />
+        <img 
+          src={settingsIcon} 
+          alt="Settings Icon" 
+          className={styles.SettingsIcon}
+        />
         </div>
       </nav>
 
       {isSettingsVisible && (
-        <div>
-          <div>
-            <Settings />
-          </div>
-          <button onClick={toggleSettings} className={styles.CloseButton}>
-            Close Settings
-          </button>
-        </div>
+            <Settings />  
       )}
     </>
   );
