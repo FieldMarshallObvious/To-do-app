@@ -15,7 +15,7 @@ export const handleCreateProject = async (createProject, projectTitle, projectDe
 // * Create a task in the database
 export const handleCreateTask = async (createTask, taskTitle, color, projectTitle, taskDate) => {
     try {
-        let taskData = { 'name': taskTitle };
+        let taskData = { 'name': taskTitle, 'completed': false };
 
         if (taskDate) {
             let dateObj = new Date(taskDate + 'T00:00:00');

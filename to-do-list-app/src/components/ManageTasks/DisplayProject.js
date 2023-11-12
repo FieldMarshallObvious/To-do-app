@@ -28,7 +28,7 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEdi
     const [showProjectModalEdit, setShowProjectModalEdit] = useState(false);
     const [showProjectDelete, setShowProjectDelete] = useState(false);
 
-    const { createProject, createTask, editProject, editTask, deleteTask, deleteProject } = useUser();
+    const { createProject, createTask, editProject, editTask, deleteTask, deleteProject, setTaskCompleteLocal, setTaskCompleteDatabase } = useUser();
 
     const handleNameSubmit = (projectIndex, taskIndex) => {
         handleEditTask(editTask, oldTaskName, newTaskName, newTaskDate, projectName);
@@ -72,6 +72,13 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEdi
     
     const handleCloseModal = () => {
         setShowModal(false);
+    };
+
+    // Assuming project.Tasks is part of a state that can be updated
+    const handleCircleClick = async (project, taskName, taskCompleted) => {
+       await setTaskCompleteLocal(project, taskName, !taskCompleted);
+       await setTaskCompleteDatabase(project, taskName, !taskCompleted);
+       console.log("After complete: ", projects);
     };
 
     // Update the index when the number of projects has been loaded 
@@ -123,8 +130,28 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEdi
                     
                     <div className={`${openIndex[index] ? "show" : "collapse"}`} style={{paddingTop: "10px"}}>                        
                         {Array.isArray(project?.Tasks) && project.Tasks.map((task, taskIndex )=> (
-                            <div className="d-flex align-items-center p-3 border rounded mb-3" key={task.name}>
-                                <div className="mb-3 rounded-circle" style={{ width: '20px', height: '20px', backgroundColor: task.color ? task.color : "#053DA9" }}> </div>
+                            <div className="d-flex align-items-center p-3 border rounded mb-3" key={task.name} style={{color: task.completed ? "grey":""}}>
+                                <div
+                                className="d-flex align-items-center justify-content-center mb-3 rounded-circle"
+                                onClick={() => handleCircleClick(project.Title, task.name, task.completed)}
+                                style={{
+                                    width: '20px',
+                                    height: '20px',
+                                    backgroundColor: `white`,
+                                    border: `2px solid ${task.color ? task.color : "#053DA9"}`,
+                                    cursor: 'pointer',
+                                    transition: 'background-color 0.2s', 
+                                }}
+                                >
+                                    <div className='rounded-circle' style={{
+                                        width: '13px',
+                                        height: '13px',
+                                        backgroundColor: task.completed ? `${task.color ? task.color : "#053DA9"}` : 'white',
+                                        margin: '0',
+                                        marginTop: '0.5px',
+                                        transition: 'background-color 0.2s',
+                                    }} />
+                                </div>
                                 <div className={`${styles.taskItem}`}>
                                     { isEditingTask[index] && isEditingTask[index][taskIndex]  ?
                                         <input

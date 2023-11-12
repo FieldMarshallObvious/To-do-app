@@ -287,7 +287,89 @@ export function UserProvider ({ children }) {
         throw error;
       }
     }
-  }; 
+  };
+  const setTaskCompleteLocal = (project, task, completed) => {
+    if (currentUser) {
+      if (project.trim() === '') {
+        project = 'Default';
+      }
+
+      const currentTasks = projects.find((p) => p.Title === project).Tasks || [];
+      console.log("Current tasks", currentTasks);
+      const taskObject = currentTasks.find((t) => t.name === task);
+      console.log("Task object", taskObject);
+  
+      if (taskObject) {
+        taskObject.completed = completed; // Directly modify the 'completed' property of the task object
+  
+        setProjects((prevProjects) => {
+          const editedProjects = prevProjects.map((p) => { 
+            if (p.Title === project) {
+              return { ...p, Tasks: currentTasks }; // Ensure all properties of the project are preserved
+            }
+            return p;
+          });
+          return editedProjects;
+        });
+  
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+  
+  const setTaskCompleteDatabase = async (project, task, completed) => {
+    if (currentUser) {
+      if (project.trim() === '') {
+        project = 'Default';
+      }
+  
+      if (!task || task.trim() === '') {
+        console.error("Task input is empty or undefined");
+        return;
+      }
+  
+      const userID = currentUser.uid;
+      const projectsRef = collection(db, 'Users', userID, 'projects');
+      let projectRef = projects.find((p) => p.Title === project);
+      const projectDocRef = doc(projectsRef, projectRef.id);
+  
+      try {
+        const projectSnapshot = await getDoc(projectDocRef);
+        if (!projectSnapshot.exists()) {
+          console.error("Project does not exist");
+          return;
+        }
+        const currentTasks = projectSnapshot.data().Tasks || [];
+  
+        const taskIndex = currentTasks.findIndex(t => t.name === task);
+        if (taskIndex === -1) {
+          console.error("Task not found");
+          return;
+        }
+        currentTasks[taskIndex].completed = completed;
+  
+        setProjects((prevProjects) => {
+          const editedProjects = prevProjects.map((p) => { 
+            if (p.Title === project) {
+              return { id: project, ...projectSnapshot.data(), Tasks: currentTasks };
+            }
+            return p;
+          });
+  
+          return editedProjects;
+        });
+  
+        await updateDoc(projectDocRef, { Tasks: currentTasks });
+        return projectDocRef.id;
+  
+      } catch (error) {
+        console.error("Error completing task: ", error);
+        throw error;
+      }
+    }
+  }
 
   const deleteTask = async (task, project) => {
     if (currentUser) {
@@ -354,7 +436,9 @@ export function UserProvider ({ children }) {
     editProject, 
     editTask,
     deleteTask,
-    deleteProject
+    deleteProject,
+    setTaskCompleteLocal,
+    setTaskCompleteDatabase
   };
 
   return (
