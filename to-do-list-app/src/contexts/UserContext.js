@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { auth, db } from '../firebase'; // Import initialized Firebase
 import { collection, doc, getDoc, setDoc, getDocs, addDoc, updateDoc, arrayUnion, deleteDoc } from 'firebase/firestore';
-
+import { sanitizeData } from '../utils/ObjectUtils';
 export const UserContext = React.createContext();
 
 export function useUser() {
@@ -25,6 +25,9 @@ export function UserProvider ({ children }) {
           selectedProjects: ["all"]
       }
 });
+  const [layout, setLayoutState] = useState([{ i: "a", x: 0, y: 0, w: 6, h: 2 },
+                                             { i: "b", x: 10, y: 0, w: 6, h: 1 },
+                                             { i: "c", x: 10, y: 2, w: 6, h: 1 }])
 
   const setCardSettings = (newSettings) => {
     if (newSettings === null) {
@@ -33,6 +36,15 @@ export function UserProvider ({ children }) {
     }
 
     setCardSettingsState(newSettings);
+    return;
+  }
+
+  const setLayout = (newLayout) => {
+    if (newLayout === null) {
+      console.error("Can't set layout to null");
+      return;
+    }
+    setLayoutState(newLayout);
     return;
   }
 
@@ -471,15 +483,23 @@ export function UserProvider ({ children }) {
     }
   }
 
-  const saveCardSettings = (newSettings) => {
+  const saveCardSettingsAndLayout = (newSettings, newLayout) => {
     if (currentUser) {
       const userID = currentUser.uid;
       const settingsRef = doc(db, 'Users', userID);
       
+      console.log("new settings are ", newSettings)
+      console.log("new layout is ", newLayout)
 
+      const cleanedSettings = sanitizeData(newSettings);
+      const cleanedLayout = sanitizeData(newLayout); 
+      
+      console.log("Cleaned Settings are", cleanedSettings)
+      console.log("Cleaned Layout is", cleanedLayout)
       try {
         updateDoc(settingsRef, {
-          cardSettings: newSettings
+          cardSettings: cleanedSettings,
+          layout: cleanedLayout
         });
       } catch (error) {
         console.error("Error saving card settings: ", error);
@@ -487,6 +507,33 @@ export function UserProvider ({ children }) {
       }
     }
   };
+
+  const getLayout = async () => {
+    if (currentUser) {
+      const userID = currentUser.uid;
+      const layoutRef = doc(db, 'Users', userID);
+      try {
+        const layoutSnapshot = await getDoc(layoutRef);
+        if (layoutSnapshot.exists()) {
+          const layout = layoutSnapshot.data();
+          if (layout.layout) {
+            setLayout(layout.layout);
+          } else {
+            setLayout([{ i: "a", x: 0, y: 0, w: 6, h: 2 },
+            { i: "b", x: 10, y: 0, w: 6, h: 1 },
+            { i: "c", x: 10, y: 2, w: 6, h: 1 }]);
+          }
+          return layout;
+        } else {
+          console.error("Layout does not exist");
+          return;
+        }
+      } catch (error) {
+        console.error("Error fetching layout: ", error);
+        throw error;
+      }
+    }
+  }
   
 
   const value = {
@@ -494,6 +541,8 @@ export function UserProvider ({ children }) {
     projects,
     cardSettings,
     setCardSettings,
+    layout,
+    setLayout,
     getProjects,
     createProject,
     createTask,
@@ -504,7 +553,8 @@ export function UserProvider ({ children }) {
     setTaskCompleteLocal,
     setTaskCompleteDatabase,
     getCardSettings,
-    saveCardSettings
+    saveCardSettingsAndLayout,
+    getLayout
   };
 
   return (

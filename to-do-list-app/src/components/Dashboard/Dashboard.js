@@ -26,13 +26,10 @@ const Dashboard = () => {
     const navigate = useNavigate()
 
    const { updateDisplayName, logout } = useAuth();
-   const { getProjects, createProject, createTask, projects, getCardSettings } = useUser();
+   const { getProjects, createProject, createTask, projects, getCardSettings, getLayout } = useUser();
    const [displayName, setDisplayName] = useState("");
    const [showProjectModal, setShowProjectModal] = useState(false);
    const [selectedOption, setSelectedOption] = useState('CreateTask');
-   const [layout, setLayout] = useState([{ i: "a", x: 0, y: 0, w: 6, h: 2 },
-                                         { i: "b", x: 10, y: 0, w: 6, h: 1 },
-                                         { i: "c", x: 10, y: 2, w: 6, h: 1 }])
     const [locked, setLocked] = useState(true);
     const [hover, setHover] = useState(false);
 
@@ -57,11 +54,6 @@ const Dashboard = () => {
         });
     };
 
-    // *Handle update to the layout
-    const handeLayoutChange = (newLayout) => {
-        setLayout(newLayout);
-    }
-
     // * Get projects from database if they aren't
     // * already in the projects state
     useEffect(() => {
@@ -69,6 +61,7 @@ const Dashboard = () => {
             try {
               await getProjects();
               await getCardSettings();
+              await getLayout();
             } catch (error) {
               console.error("Error getting projects: ", error);
             }
@@ -105,7 +98,7 @@ const Dashboard = () => {
                     }
                 </Button>
             </Row>
-            <DashboardLayout projects={projects} layout={layout} locked={locked} updateParentLocked={setLocked} showProjectModal={showProjectModal}  setShowProjectModal={setShowProjectModal} updateParentLayout={handeLayoutChange}/>
+            <DashboardLayout projects={projects} locked={locked} showProjectModal={showProjectModal} updateParentLocked={setLocked}/>
         </Row> 
         <Row className="mx-auto">
         <Col xs={12} md={6} lg={4}>

@@ -8,6 +8,7 @@ import Card from '@mui/material/Card';
 import styles from './DashboardLayout.module.css';
 import DashboardCardSettings from './DashboardCardSettings';
 import { UserContext } from "../../contexts/UserContext";
+import { isObjectsEqual } from "../../utils/ObjectUtils";
 
 
 
@@ -24,7 +25,9 @@ export default class DashboardLayout extends Component {
             value: true,
             loaded: false,
             edited: false,
-            layout: props.layout,
+            oldLayout: [{ i: "a", x: 0, y: 0, w: 6, h: 2 },
+                        { i: "b", x: 10, y: 0, w: 6, h: 1 },
+                        { i: "c", x: 10, y: 2, w: 6, h: 1 }],
             snapPointsX: [0,10],
             snapPointsY: [0, 1, 2],
             occupied: {"0,1": "a", "0,2": "a", "10,0": "c", "10,1": "c", "10,2": "empty"},
@@ -57,7 +60,7 @@ export default class DashboardLayout extends Component {
         this.setState({ ... this.state, context: this.context });
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         const newState = {};
     
         if (this.props.projects !== prevProps.projects) {
@@ -70,7 +73,16 @@ export default class DashboardLayout extends Component {
             if (!this.props.locked) { 
                 newState.settingsVisibility = { a: false, b: false, c: false };
                 newState.edited = false;
+                
             }
+        }
+
+        if ( (!isObjectsEqual(this.context.layout, prevState.oldLayout) || 
+              !isObjectsEqual(this.context.cardSettings, prevState.previouSettings)) && 
+               !this.props.locked) {
+                newState.oldLayout = this.context.layout;
+                newState.previouSettings = this.context.cardSettings;  
+                newState.occupied = this.computeOccupiedPositions(this.context.layout);
         }
     
         if (this.props.showProjectModal !== prevProps.showProjectModal) {
@@ -97,7 +109,20 @@ export default class DashboardLayout extends Component {
         );
 
         return filteredProjects;
-      };
+    };
+
+    computeOccupiedPositions(layout) {
+        let occupied = {};
+        layout.forEach(item => {
+            // Assuming each item has an 'x', 'y', 'w', 'h' (width, height) properties
+            for (let x = item.x; x < item.x + item.w; x++) {
+                for (let y = item.y; y < item.y + item.h; y++) {
+                    occupied[`${x},${y}`] = item.i; // 'i' is the identifier of the item
+                }
+            }
+        });
+        return occupied;
+    }
 
     updatedSettings = (cardKey, newSettings) => {
         this.setState({ edited: true });
@@ -128,6 +153,8 @@ export default class DashboardLayout extends Component {
 
     onDragStop = (layout, oldItem, newItem, placeholder, e, element) => {
         e.preventDefault();
+
+        this.setState({ edited: true });
     
         const closestX = this.getClosest(newItem.x, this.state.snapPointsX);
         const closestY = this.getClosest(newItem.y, this.state.snapPointsY);
@@ -171,8 +198,8 @@ export default class DashboardLayout extends Component {
             occupiedPositions[getOccupiedKey(closestX, closestY + 1)] = draggedItem.i;
         }
     
-        this.setState({ layout: newLayout, occupied: occupiedPositions });
-        this.props.updateParentLayout(newLayout);
+        this.setState({ occupied: occupiedPositions });
+        this.context.setLayout(newLayout);
     };
     
 
@@ -183,7 +210,7 @@ export default class DashboardLayout extends Component {
     <div>
         <ResponsiveGridLayout
         className="layout"
-        layouts={{lg: this.state.layout}}
+        layouts={{lg: this.context.layout}}
         breakpoints={{ lg: 1200 }}
         cols={{ lg: 12 }}
         rowHeight={281}
@@ -259,12 +286,15 @@ export default class DashboardLayout extends Component {
                         <Button variant="outline-primary" 
                                 className={`mx-auto ${styles.saveLayoutButton}`} 
                                 onClick={() => { 
-                                    this.context.saveCardSettings(this.context.cardSettings) 
+                                    this.context.saveCardSettingsAndLayout(this.context.cardSettings, this.context.layout) 
                                     this.props.updateParentLocked(false)
+                                    this.setState({ oldLayout: this.context.layout, edited: false })
                                     }}>Save Layout</Button>
                         <Button variant="outline-secondary" 
                                 className="mx-auto" onClick={() => {
                                     this.context.setCardSettings(this.state.previouSettings)
+                                    this.context.setLayout(this.state.oldLayout)
+                                    this.setState({ edited: false })
                                     this.props.updateParentLocked(false)
                                 }}>Cancel Layout</Button>
                     </div>
