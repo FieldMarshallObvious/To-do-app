@@ -23,6 +23,7 @@ export default class DashboardLayout extends Component {
         this.state = {
             value: true,
             loaded: false,
+            edited: false,
             layout: props.layout,
             snapPointsX: [0,10],
             snapPointsY: [0, 1, 2],
@@ -34,6 +35,20 @@ export default class DashboardLayout extends Component {
                 b: false,
                 c: false
             },
+            previouSettings: {
+                "a": {
+                    displayOption: "projects",
+                    selectedProjects: ["all"]
+                },
+                "b": {
+                    displayOption: "projects",
+                    selectedProjects: ["all"]
+                },
+                "c": {
+                    displayOption: "projects",
+                    selectedProjects: ["all"]
+                }
+          },
             showProjectModal: this.props.showProjectModal,
         };
     }
@@ -42,31 +57,35 @@ export default class DashboardLayout extends Component {
         this.setState({ ... this.state, context: this.context });
     }
 
-    componentDidUpdate(prevProps)  {
+    componentDidUpdate(prevProps) {
+        const newState = {};
+    
         if (this.props.projects !== prevProps.projects) {
-            this.setState({ projects: this.props.projects });
+            newState.projects = this.props.projects;
         }
-
+    
         if (this.props.locked !== prevProps.locked) {
-            this.setState({ locked: this.props.locked });
-
+            newState.locked = this.props.locked;
+    
             if (!this.props.locked) { 
-                this.setState({ settingsVisibility: {
-                    a: false,
-                    b: false,
-                    c: false
-                }});
-             }
+                newState.settingsVisibility = { a: false, b: false, c: false };
+                newState.edited = false;
+            }
         }
-
-        if ( this.props.showProjectModal !== prevProps.showProjectModal) {
-            this.setState({ showProjectModal: this.props.showProjectModal });
+    
+        if (this.props.showProjectModal !== prevProps.showProjectModal) {
+            newState.showProjectModal = this.props.showProjectModal;
+        }
+    
+        if (Object.keys(newState).length > 0) {
+            this.setState(newState);
         }
     }
+    
 
     getFilteredProjects = (cardKey) => {
         const { projects } = this.state;
-        const selectedProjects = this.context.cardSettings[cardKey].selectedProjects;
+        const selectedProjects = this.context.cardSettings[cardKey].selectedProjects ? this.context.cardSettings[cardKey].selectedProjects : 'all';
 
         // If 'all' is selected, return all projects.
         if (selectedProjects.includes('all')) {
@@ -81,6 +100,8 @@ export default class DashboardLayout extends Component {
       };
 
     updatedSettings = (cardKey, newSettings) => {
+        this.setState({ edited: true });
+        this.setState({ previouSettings: this.context.cardSettings });
         this.context.setCardSettings(prevState => ({
             ...prevState,
             [cardKey]: {
@@ -231,6 +252,26 @@ export default class DashboardLayout extends Component {
             </Card>
         ))}
         </ResponsiveGridLayout>
+        <div className="d-flex align-items-center justify-content-center">
+            { this.state.edited ?
+                <div className={`animate pop d-flex align-items-center justify-content-center ${styles.saveContainer}`}> 
+                    <div className="d-flex align-items-center justify-content-center"> 
+                        <Button variant="outline-primary" 
+                                className={`mx-auto ${styles.saveLayoutButton}`} 
+                                onClick={() => { 
+                                    this.context.saveCardSettings(this.context.cardSettings) 
+                                    this.props.updateParentLocked(false)
+                                    }}>Save Layout</Button>
+                        <Button variant="outline-secondary" 
+                                className="mx-auto" onClick={() => {
+                                    this.context.setCardSettings(this.state.previouSettings)
+                                    this.props.updateParentLocked(false)
+                                }}>Cancel Layout</Button>
+                    </div>
+                </div>
+                : <></>
+            }
+        </div>
     </div>
     );
   }

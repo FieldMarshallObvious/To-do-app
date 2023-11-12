@@ -18,3 +18,39 @@
     visibility: hidden;
     pointer-events: none;
 }
+
+.saveContainer {
+    height: fit-content;
+    width: fit-content;
+    border-radius: 12px;
+    border: 1px solid #AAA399;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.saveContainer > div {
+    margin-right: 15px;
+    margin-left: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.saveContainer > div > Button {
+    width: 170px;
+}
+
+
+.saveLayoutButton {
+    margin-right: 15px !important;
+    color: green;
+    border-color: green;
+}
+
+.saveLayoutButton:hover,
+.saveLayoutButton:focus,
+.saveLayoutButton:active {
+    margin-right: 15px !important;
+    background-color: green !important;
+    border-color: green !important;
+}

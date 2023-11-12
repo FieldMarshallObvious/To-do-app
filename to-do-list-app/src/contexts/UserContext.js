@@ -11,7 +11,7 @@ export function useUser() {
 export function UserProvider ({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [projects, setProjects] = useState([]);
-  const [cardSettings, setCardSettings] = useState({
+  const [cardSettings, setCardSettingsState] = useState({
       "a": {
           displayOption: "projects",
           selectedProjects: ["all"]
@@ -25,6 +25,16 @@ export function UserProvider ({ children }) {
           selectedProjects: ["all"]
       }
 });
+
+  const setCardSettings = (newSettings) => {
+    if (newSettings === null) {
+      console.error("Can't set card settings to null");
+      return;
+    }
+
+    setCardSettingsState(newSettings);
+    return;
+  }
 
   useEffect(() => {
     // Set up a listener for authentication state changes
@@ -423,6 +433,60 @@ export function UserProvider ({ children }) {
       }
     }
   }
+
+  const getCardSettings = async () => {
+    if (currentUser) {
+      const userID = currentUser.uid;
+      const settingsRef = doc(db, 'Users', userID);
+      try {
+        const settingsSnapshot = await getDoc(settingsRef);
+        if (settingsSnapshot.exists()) {
+          const settings = settingsSnapshot.data();
+          if (settings.cardSettings) {
+            setCardSettings(settings.cardSettings);
+          } else {
+            setCardSettings({
+              "a": {
+                  displayOption: "projects",
+                  selectedProjects: ["all"]
+              },
+              "b": {
+                  displayOption: "projects",
+                  selectedProjects: ["all"]
+              },
+              "c": {
+                  displayOption: "projects",
+                  selectedProjects: ["all"]
+              }});
+          }
+          return settings;
+        } else {
+          console.error("Settings do not exist");
+          return;
+        }
+      } catch (error) {
+        console.error("Error fetching settings: ", error);
+        throw error;
+      }
+    }
+  }
+
+  const saveCardSettings = (newSettings) => {
+    if (currentUser) {
+      const userID = currentUser.uid;
+      const settingsRef = doc(db, 'Users', userID);
+      
+
+      try {
+        updateDoc(settingsRef, {
+          cardSettings: newSettings
+        });
+      } catch (error) {
+        console.error("Error saving card settings: ", error);
+        throw error;
+      }
+    }
+  };
   
 
   const value = {
@@ -438,7 +502,9 @@ export function UserProvider ({ children }) {
     deleteTask,
     deleteProject,
     setTaskCompleteLocal,
-    setTaskCompleteDatabase
+    setTaskCompleteDatabase,
+    getCardSettings,
+    saveCardSettings
   };
 
   return (

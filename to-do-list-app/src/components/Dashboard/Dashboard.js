@@ -26,7 +26,7 @@ const Dashboard = () => {
     const navigate = useNavigate()
 
    const { updateDisplayName, logout } = useAuth();
-   const { getProjects, createProject, createTask, projects } = useUser();
+   const { getProjects, createProject, createTask, projects, getCardSettings } = useUser();
    const [displayName, setDisplayName] = useState("");
    const [showProjectModal, setShowProjectModal] = useState(false);
    const [selectedOption, setSelectedOption] = useState('CreateTask');
@@ -68,6 +68,7 @@ const Dashboard = () => {
         const handleGetProjects = async () => { 
             try {
               await getProjects();
+              await getCardSettings();
             } catch (error) {
               console.error("Error getting projects: ", error);
             }
@@ -104,7 +105,7 @@ const Dashboard = () => {
                     }
                 </Button>
             </Row>
-            <DashboardLayout projects={projects} layout={layout} locked={locked} showProjectModal={showProjectModal}  setShowProjectModal={setShowProjectModal} updateParentLayout={handeLayoutChange}/>
+            <DashboardLayout projects={projects} layout={layout} locked={locked} updateParentLocked={setLocked} showProjectModal={showProjectModal}  setShowProjectModal={setShowProjectModal} updateParentLayout={handeLayoutChange}/>
         </Row> 
         <Row className="mx-auto">
         <Col xs={12} md={6} lg={4}>
