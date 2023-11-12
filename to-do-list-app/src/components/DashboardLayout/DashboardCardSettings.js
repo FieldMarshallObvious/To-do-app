@@ -24,7 +24,8 @@ const DashboardCardSettings = ({ allProjects, settings, updateSettings }) => {
   useEffect(() => {
     console.log("Settings are", settings)
     if (!loaded) {
-        console.log("Selected project settings", settings.selectedProjects);
+        console.log("Selected project settings", settings);
+        setDisplayOption(settings.displayOption);
         if (settings.selectedProjects[0] === "all") {
             setSelectedProjects(allProjects.map(project => project.Title));
         }

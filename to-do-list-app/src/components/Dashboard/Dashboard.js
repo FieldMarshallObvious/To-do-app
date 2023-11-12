@@ -15,7 +15,7 @@ import DisplayProject from '../ManageTasks/DisplayProject';
 import { Navbar } from 'react-bootstrap';
 import '../NavBar/TopNavbar';
 import Widget from '../../utils/CalendarWidget';
-import ChartComponent from '../../utils/ChartComponents';
+import ChartComponent from '../../utils/ChartComponents.js';
 import { ListTask } from 'react-bootstrap-icons';
 
 import styles from './Dashboard.module.css';

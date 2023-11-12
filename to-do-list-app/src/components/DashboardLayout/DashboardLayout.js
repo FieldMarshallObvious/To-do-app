@@ -9,8 +9,7 @@ import styles from './DashboardLayout.module.css';
 import DashboardCardSettings from './DashboardCardSettings';
 import { UserContext } from "../../contexts/UserContext";
 import { isObjectsEqual } from "../../utils/ObjectUtils";
-
-
+import ChartComponent from "../../utils/ChartComponents";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -201,6 +200,28 @@ export default class DashboardLayout extends Component {
         this.setState({ occupied: occupiedPositions });
         this.context.setLayout(newLayout);
     };
+
+    renderProjectOrChart = (cardKey) => {
+        const { cardSettings, projects } = this.context;
+    
+        if (!cardSettings || !cardSettings[cardKey] || cardSettings[cardKey].displayOption !== "projects") {
+            return <ChartComponent tasks={[{name: 'Task 1', complete: 2, remaining: 3}]} title={'Test'} tasksComplete={2} tasksRemaining={3} />;
+        }
+    
+        if (!projects || projects.length === 0) {
+            return <span>Loading...</span>;
+        }
+    
+        const filteredProjects = this.getFilteredProjects(cardKey);
+        if (filteredProjects.length === 0) {
+            return <span>No projects selected</span>;
+        }
+    
+        return <DisplayProject projects={filteredProjects}
+                               showProjectModal={this.state.showProjectModal} 
+                               setShowProjectModal={this.props.setShowProjectModal} 
+                               isEditing={this.state.locked} />;
+    }
     
 
     render = () => {
@@ -263,17 +284,7 @@ export default class DashboardLayout extends Component {
                     </div>
                 ) : (
                     <LayoutCard color={cardKey} content={() => {
-                        const filteredProjects = this.getFilteredProjects(cardKey);
-                        return this.state.projects && this.state.projects.length > 0 ? (
-                            filteredProjects.length > 0 ? (
-                                <DisplayProject projects={filteredProjects} 
-                                                showProjectModal={this.state.showProjectModal} 
-                                                setShowProjectModal={this.props.setShowProjectModal} 
-                                                isEditing={this.state.locked}/>
-                            ) : ( <span>No projects selected</span>  )
-                        ) : (
-                            <span>Loading...</span>
-                        );
+                        return this.renderProjectOrChart(cardKey);
                     }} />
                 )}
             </Card>
