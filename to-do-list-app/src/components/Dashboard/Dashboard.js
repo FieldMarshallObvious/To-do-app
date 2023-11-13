@@ -98,7 +98,7 @@ const Dashboard = () => {
                     }
                 </Button>
             </Row>
-            <DashboardLayout projects={projects} locked={locked} showProjectModal={showProjectModal} updateParentLocked={setLocked}/>
+            <DashboardLayout projects={projects} locked={locked} showProjectModal={showProjectModal} updateParentLocked={setLocked} setShowProjectModal={setShowProjectModal}/>
         </Row> 
         <Row className="mx-auto">
         <Col xs={12} md={6} lg={4}>
