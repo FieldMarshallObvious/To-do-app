@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useUser } from '../../contexts/UserContext';
 import { Link, useNavigate } from "react-router-dom";
 import styles from './Settings.module.css'; 
+import logoutButtonImage from './logoutbutton.svg';
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -15,8 +16,10 @@ const Settings = () => {
 
   return (
     <div className={styles.Sidebar}>
-      {/* Your sidebar content */}
-      <button onClick={handleSignOut} className={styles.LogoutButton}>Logout</button>
+      <button onClick={handleSignOut} className={styles.LogoutButton}>
+        <img src={logoutButtonImage} alt="Log out" /> 
+        Log out 
+      </button>
     </div>
   );
 };

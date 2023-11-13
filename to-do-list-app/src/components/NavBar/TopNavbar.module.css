@@ -1,41 +1,44 @@
 .TopNavbar {
-    width: 100%; /* Full width */
-    background-color: rgba(173, 216, 230, 0.5); /* Light blue with transparency */
-    font-family: 'Helvetica Neue' ; /* Modern sans-serif font */
-    padding: 10px 15px; /* Appropriate padding */
-    display: flex; /* Flexbox for layout */
-    align-items: center; /* Vertically center items */
-    justify-content: space-between; /* Space out the child elements */
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Subtle box shadow */
+    position: fixed;
+    width: calc(100% - 75px); /* Adjusted width */
+    margin-right: 50px; /* Right margin */
+    margin-left: 20px; 
+    background-color: rgba(251, 251, 251, 1);
+    padding: 10px 15px;
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
+    z-index: 1000;
 }
 
 .TopNavbar .TaskInfo, .SettingsIconContainer {
-    margin: 0 10px; /* Margin for internal elements */
-    font-size: 16px; /* Adjust font size */
-    font-weight: 500; /* Medium font weight */
+    margin: 0 10px; 
+    font-size: 16px; 
+    font-weight: 500; 
 }
 
 .SettingsIconContainer {
-    cursor: pointer; /* Change cursor on hover */
+    cursor: pointer; 
 }
 
 .SettingsIconContainer:hover {
-    opacity: 0.8; /* Hover effect */
+    opacity: 0.8;
 }
 
 .SettingsIcon {
-    width: 20px; /* Default size */
+    width: 20px; 
     height: 20px;
   }
   
   @media (min-width: 600px) {
     .SettingsIcon {
-      width: 35px; /* Larger size on wider screens */
+      width: 35px; 
       height: 35px;
     }
   }
 
-/* Additional styling for other elements like CloseButton, Spacer, etc. */
+
 
 
   
