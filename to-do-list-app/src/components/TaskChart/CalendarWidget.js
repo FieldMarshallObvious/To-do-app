@@ -45,8 +45,9 @@ function CalendarWidget() {
           .red-circle {
             width: 10px;
             height: 10px;
-            background-color: red; /* You can change this to red if you want the circle to be red */
+            background-color: red; 
             border-radius: 50%;
+            margin-left: 12px;
           }
         `}
       </style>
