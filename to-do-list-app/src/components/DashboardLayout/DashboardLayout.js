@@ -10,6 +10,7 @@ import DashboardCardSettings from './DashboardCardSettings';
 import { UserContext } from "../../contexts/UserContext";
 import { isObjectsEqual } from "../../utils/ObjectUtils";
 import ChartComponent from '../TaskChart/ChartComponents';
+import CalendarWidget from "../TaskChart/CalendarWidget";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -204,8 +205,11 @@ export default class DashboardLayout extends Component {
     renderProjectOrChart = (cardKey) => {
         const { cardSettings, projects } = this.context;
     
-        if (!cardSettings || !cardSettings[cardKey] || cardSettings[cardKey].displayOption !== "projects") {
+        if (cardSettings[cardKey].displayOption === "graph") {
             return <ChartComponent tasks={[{name: 'Task 1', complete: 2, remaining: 3}]} title={'Test'} tasksComplete={2} tasksRemaining={3} />;
+        }
+        else if (cardSettings[cardKey].displayOption === "calendar") {
+            return <CalendarWidget />;
         }
     
         if (!projects || projects.length === 0) {

@@ -57,6 +57,15 @@ const DashboardCardSettings = ({ allProjects, settings, updateSettings }) => {
             />
             Graph
           </label>
+          <label>
+            <input
+              type="radio"
+              value="calendar"
+              checked={displayOption === 'calendar'}
+              onChange={handleDisplayChange}
+            />
+            Calendar
+          </label>
         </div>
 
         {displayOption === 'projects' && (
