@@ -1,10 +1,10 @@
 .TopNavbar {
     position: fixed;
-    width: calc(100% - 75px); /* Adjusted width */
-    margin-right: 50px; /* Right margin */
+    width: calc(100% - 75px); 
+    margin-right: 50px; 
     margin-left: 20px; 
     background-color: rgba(251, 251, 251, 1);
-    padding: 10px 15px;
+    padding: 10px 15px 10px 15px; 
     display: flex; 
     align-items: center; 
     justify-content: space-between; 

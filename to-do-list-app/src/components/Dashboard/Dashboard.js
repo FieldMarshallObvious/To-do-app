@@ -90,7 +90,7 @@ const Dashboard = () => {
             <TopNavbar initialTask={testTask} />
         </Row>
         <Row className='mx-auto'>
-            <Row style={{justifyContent:'right'}}>
+            <Row style={{justifyContent:'right', paddingTop: '50px'}}>
                 <Button className={`btn btn-primary ${styles.createProjectButton}`} onClick={() => setShowProjectModal(true)}> Create Project </Button>
                 <Button className={`btn btn-primary ${styles.lockButton}`} onClick={() => setLocked(!locked)} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
                     {!locked ?
