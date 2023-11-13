@@ -14,12 +14,12 @@ import DashboardLayout from '../DashboardLayout/DashboardLayout';
 import DisplayProject from '../ManageTasks/DisplayProject';
 import { Navbar } from 'react-bootstrap';
 import '../NavBar/TopNavbar';
-import Widget from '../../utils/CalendarWidget';
-import ChartComponent from '../../utils/ChartComponents.js';
+
+import ChartComponent from '../TaskChart/ChartComponents';
 import { ListTask } from 'react-bootstrap-icons';
 
 import styles from './Dashboard.module.css';
-import CalendarWidget from '../../utils/CalendarWidget';
+import CalendarWidget from '../TaskChart/CalendarWidget';
 import TopNavbar from '../NavBar/TopNavbar.js';
 
 const Dashboard = () => {

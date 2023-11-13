@@ -9,7 +9,7 @@ import styles from './DashboardLayout.module.css';
 import DashboardCardSettings from './DashboardCardSettings';
 import { UserContext } from "../../contexts/UserContext";
 import { isObjectsEqual } from "../../utils/ObjectUtils";
-import ChartComponent from "../../utils/ChartComponents";
+import ChartComponent from '../TaskChart/ChartComponents';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
