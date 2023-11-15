@@ -26,12 +26,12 @@ const Dashboard = () => {
     const navigate = useNavigate()
 
    const { updateDisplayName, logout } = useAuth();
-   const { getProjects, createProject, createTask, projects, getCardSettings, getLayout } = useUser();
+   const { getProjects, projects, getCardSettings, getLayout } = useUser();
    const [displayName, setDisplayName] = useState("");
    const [showProjectModal, setShowProjectModal] = useState(false);
    const [selectedOption, setSelectedOption] = useState('CreateTask');
-    const [locked, setLocked] = useState(true);
-    const [hover, setHover] = useState(false);
+   const [locked, setLocked] = useState(true);
+   const [hover, setHover] = useState(false);
 
     //Test task, navbar needs one passed to it
     const testTask = {

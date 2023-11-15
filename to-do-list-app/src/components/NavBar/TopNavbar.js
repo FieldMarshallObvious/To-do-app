@@ -3,41 +3,34 @@ import Settings from '../Settings/Settings.js';
 import styles from './TopNavbar.module.css'; 
 import settingsIcon from './settings-icon.svg';
 import PropTypes from "prop-types"; // Import PropTypes
+import { useUser } from "../../contexts/UserContext.js";
+import numericFormatDate  from "../../utils/numericFormatDate.js";
 
-export const TopNavbar = ({ initialTask }) => {
+export const TopNavbar = () => {
+
+  const { nearestTask } = useUser();
   
-  const [task, setTask] = useState(initialTask);
   const [isSettingsVisible, setSettingsVisible] = useState(false);
 
   const toggleSettings = () => {
     setSettingsVisible(prev => !prev);
   };
 
-  const formatDate = (date) => {
-    return date ? new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric', month: 'long', day: 'numeric'
-    }) : "No due date";
-  };
-
-  useEffect(() => {
-    const taskUpdateInterval = setInterval(() => {
-      // Just checking that the task can update
-      setTask({
-        name: "Updated Task ",
-        due_date: new Date(),
-      });
-    }, 5000);
-
-    return () => clearInterval(taskUpdateInterval);
-  }, []);
 
 
   return (
     <>
       <nav className={styles.TopNavbar}>
         <div className={styles.TaskInfo}>
-          <span>Task Name: {task.name}</span>
-          <span>Due Date: {formatDate(task.due_date)}</span>
+          { 
+            nearestTask ? 
+            <>
+              <span>Task Name: {nearestTask.name} </span>
+              <span>Due Date: {numericFormatDate(nearestTask.due_date)}</span>
+            </>
+            :
+            <span>Loading...</span>
+          }
         </div>
 
         <div className={styles.Spacer} />

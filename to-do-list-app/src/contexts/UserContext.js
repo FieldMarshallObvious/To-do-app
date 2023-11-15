@@ -10,7 +10,8 @@ export function useUser() {
 
 export function UserProvider ({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjectsState] = useState([]);
+  const [nearestTask,  setNeartestTask] = useState(null);
   const [cardSettings, setCardSettingsState] = useState({
       "a": {
           displayOption: "projects",
@@ -46,6 +47,31 @@ export function UserProvider ({ children }) {
     }
     setLayoutState(newLayout);
     return;
+  }
+
+  const setProjects = (newProjects) => {
+    setProjectsState(newProjects)
+    
+    let soonestProject = null;
+    let soonestTaskIndex = -1;
+
+    newProjects.map((p) => {
+      p.Tasks.map((t , index) => {
+        if ( soonestTaskIndex == -1 ) {
+          soonestProject = p;
+          soonestTaskIndex = index;
+          console.log("Soonest project is now", soonestProject)
+        }
+        else if ( p.Tasks[soonestTaskIndex].due_date > t.due_date  ) {
+          soonestProject = p;
+          soonestTaskIndex = index;
+        }
+      })
+    })
+
+    console.log("Soonest Project", soonestProject)
+
+    setNeartestTask( soonestProject ? soonestProject.Tasks[soonestTaskIndex] : null);
   }
 
   useEffect(() => {
@@ -542,6 +568,7 @@ export function UserProvider ({ children }) {
     cardSettings,
     setCardSettings,
     layout,
+    nearestTask,
     setLayout,
     getProjects,
     createProject,
