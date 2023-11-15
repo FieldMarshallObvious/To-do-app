@@ -7,14 +7,20 @@ function CalendarWidget() {
   const [selectedTasks, setSelectedTasks] = useState([]);
 
   const tasks = [
-    { name: 'Task 1', startDate: new Date(2023, 10, 1), endDate: new Date(2023, 10, 3) },
-    { name: 'Task 2', startDate: new Date(2023, 10, 5), endDate: new Date(2023, 10, 6) },
+    { name: 'Task 1', startDate: new Date(2023, 10, 1), endDate: new Date(2023, 10, 3), color: 'blue' },
+    { name: 'Task 2', startDate: new Date(2023, 10, 5), endDate: new Date(2023, 10, 6), color: 'green' },
     // Add more tasks
   ];
 
   const tileContent = ({ date }) => {
-    const isDueDate = tasks.some(task => date >= task.startDate && date <= task.endDate);
-    return isDueDate ? <div className="red-circle"></div> : null;
+    const dueTasks = tasks.filter(task => date >= task.startDate && date <= task.endDate);
+
+    if (dueTasks.length > 0) {
+      const taskColor = dueTasks[0].color; // Assuming all tasks for a day have the same color
+      return <div className={`red-circle ${taskColor}-circle`}></div>;
+    }
+
+    return null;
   };
 
   const handleDateClick = date => {
@@ -37,17 +43,29 @@ function CalendarWidget() {
       )}
       <style>
         {`
+
+          .custom-calendar .react-calendar__tile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
           .react-calendar__tile--has-tasks {
-            background-color: red;
             border-radius: 50%;
           }
 
           .red-circle {
             width: 10px;
             height: 10px;
-            background-color: red; 
             border-radius: 50%;
             margin-left: 12px;
+          }
+
+          .blue-circle {
+            background-color: blue;
+          }
+
+          .green-circle {
+            background-color: green;
           }
         `}
       </style>
