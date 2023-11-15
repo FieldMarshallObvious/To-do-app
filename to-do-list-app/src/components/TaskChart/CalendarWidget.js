@@ -7,20 +7,14 @@ function CalendarWidget() {
   const [selectedTasks, setSelectedTasks] = useState([]);
 
   const tasks = [
-    { name: 'Task 1', startDate: new Date(2023, 10, 1), endDate: new Date(2023, 10, 3), color: 'blue' },
-    { name: 'Task 2', startDate: new Date(2023, 10, 5), endDate: new Date(2023, 10, 6), color: 'green' },
+    { name: 'Task 1', startDate: new Date(2023, 10, 1), endDate: new Date(2023, 10, 3) },
+    { name: 'Task 2', startDate: new Date(2023, 10, 5), endDate: new Date(2023, 10, 6) },
     // Add more tasks
   ];
 
   const tileContent = ({ date }) => {
-    const dueTasks = tasks.filter(task => date >= task.startDate && date <= task.endDate);
-
-    if (dueTasks.length > 0) {
-      const taskColor = dueTasks[0].color; // Assuming all tasks for a day have the same color
-      return <div className={`red-circle ${taskColor}-circle`}></div>;
-    }
-
-    return null;
+    const isDueDate = tasks.some(task => date >= task.startDate && date <= task.endDate);
+    return isDueDate ? <div className="red-circle"></div> : null;
   };
 
   const handleDateClick = date => {
@@ -43,28 +37,17 @@ function CalendarWidget() {
       )}
       <style>
         {`
-           .react-calendar__tile--has-tasks {
-            position: relative;
-            top: 50%;
-            left: 50%;
-
-            .red-circle {
-              width: 10px;
-              height: 10px;
-              background-color: red; 
-              border-radius: 50%;
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-            }
-
-          .blue-circle {
-            background-color: blue;
+          .react-calendar__tile--has-tasks {
+            background-color: red;
+            border-radius: 50%;
           }
 
-          .green-circle {
-            background-color: green;
+          .red-circle {
+            width: 10px;
+            height: 10px;
+            background-color: red; 
+            border-radius: 50%;
+            margin-left: 12px;
           }
         `}
       </style>
