@@ -25,8 +25,8 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEdi
     const [showTaskModal, setShowTaskModal] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [openIndex, setOpenIndex] = useState([]);
-    const [showProjectModalEdit, setShowProjectModalEdit] = useState(false);
-    const [showProjectDelete, setShowProjectDelete] = useState(false);
+    const [openModalProjectIndexEdit, setOpenModalProjectIndexEdit] = useState(null);
+    const [openModalProjectIndexDelete, setOpenModalProjectIndexDelete] = useState(false);
 
     const { createProject, createTask, editProject, editTask, deleteTask, deleteProject, setTaskCompleteLocal, setTaskCompleteDatabase } = useUser();
 
@@ -111,14 +111,14 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEdi
                             <PencilSquare
                                 className={`editIcon ${styles.editIcon}`}
                                 onClick={() => 
-                                    setShowProjectModalEdit(true)
+                                    setOpenModalProjectIndexEdit(index)
                                 }
                                 style={{position: "absolute", right: "150px"}}
                             />   
                             <Trash 
                                 className={`editIcon ${styles.editIcon}`}
                                 onClick={() => { 
-                                    setShowProjectDelete(true)
+                                    setOpenModalProjectIndexDelete(index)
                                 }} 
                                 style={{position: "absolute", right:"100px"}}
                             /> 
@@ -242,23 +242,24 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEdi
 
                     {/* Edit Project Modal */}
                     <ProjectModal 
-                        show={showProjectModalEdit} 
-                        onHide={() =>  { setShowProjectModalEdit(false) }} 
+                        show={openModalProjectIndexEdit === index && openModalProjectIndexEdit != null ? true : false} 
+                        onHide={() =>  { setOpenModalProjectIndexEdit(null) }} 
                         onEditProject={handleEditProject}
                         isEditProject={true}
                         editProject={editProject}
                         oldProjectTitle={project.Title}
                         oldProjectDescription={project.Description}
                     />
+                    
 
                     {/* Delete Project Modal */}
-                    <ConfirmationModal showModal={showProjectDelete}  
-                                            handleCloseModal={handleCloseModal} 
+                    <ConfirmationModal showModal={openModalProjectIndexDelete === index && openModalProjectIndexDelete != null ? true : false}  
+                                            handleCloseModal={() => setOpenModalProjectIndexDelete(null)} 
                                             handleDanger={() => { 
                                                                         handleDeleteProject(deleteProject, project.Title) 
-                                                                        setShowProjectDelete(false)
+                                                                        setOpenModalProjectIndexDelete(null)
                                                                     }}
-                                            ModelTitle={"Confirm Deletion"}
+                                            ModelTitle={`Confirm Delete ${project.Title}`}
                                             ModelBody={"Are you sure you want to delete this project?"} 
                                             SecondaryText={"Cancel"}
                                             DangerText={"Delete"}
