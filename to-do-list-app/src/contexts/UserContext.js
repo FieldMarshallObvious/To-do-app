@@ -50,10 +50,10 @@ export function UserProvider ({ children }) {
   }
 
   const setProjects = (newProjects) => {
-    setProjectsState(newProjects)
-    
     let soonestProject = null;
     let soonestTaskIndex = -1;
+
+    console.log("New Projects are", newProjects)
 
     newProjects.map((p) => {
       p.Tasks.map((t , index) => {
@@ -70,6 +70,8 @@ export function UserProvider ({ children }) {
     })
 
     console.log("Soonest Project", soonestProject)
+
+    setProjectsState(newProjects)
 
     setNeartestTask( soonestProject ? soonestProject.Tasks[soonestTaskIndex] : null);
   }
@@ -128,8 +130,10 @@ export function UserProvider ({ children }) {
           const newProject = { id: projectDocRef.id, ...payload };
 
           console.log("New Project: ", newProject);
+
+          let newProjects = [...projects, newProject];
           
-          setProjects((prevProjects) => [...prevProjects, newProject]);
+          setProjects(newProjects);
           return project;
         }
         else {
@@ -169,17 +173,14 @@ export function UserProvider ({ children }) {
 
           console.log("Edit Payload is ", payload)
 
-
-          setProjects((prevProjects) => {
-            const editedProjects = prevProjects.map((p) => { 
-              if (p.Title === oldProjectTitle.title) {
-                return { id: project.title, ...payload };
-              }
-              return p;
-            });
-
-            return editedProjects;
+          let newProjects = projects.map((p) => {
+            if (p.Title === oldProjectTitle.title) {
+              return { id: project.title, ...payload };
+            }
+            return p;
           });
+          
+          setProjects(newProjects);
 
           // * Iterate over previous state to to update card settings project
           setCardSettings((prevSettings) => {
@@ -228,7 +229,8 @@ export function UserProvider ({ children }) {
           return;
         }
         await deleteDoc(projectDocRef);
-        setProjects((prevProjects) => prevProjects.filter((p) => p.Title !== project));
+        let newProjects = projects.filter((p) => p.Title !== project);
+        setProjects(newProjects);
 
         return projectDocRef.id;
       } catch (error) {

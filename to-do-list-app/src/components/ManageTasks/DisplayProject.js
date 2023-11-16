@@ -235,7 +235,7 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEdi
                     {/* Create Project Modal */}
                     <ProjectModal 
                         show={showProjectModal} 
-                        onHide={() => setShowProjectModal(false)} 
+                        onHide={() => { setShowProjectModal(false) }} 
                         onCreateProject={handleCreateProject}
                         createProject={createProject}
                     />
@@ -243,7 +243,7 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEdi
                     {/* Edit Project Modal */}
                     <ProjectModal 
                         show={showProjectModalEdit} 
-                        onHide={() => setShowProjectModal(false)} 
+                        onHide={() =>  { setShowProjectModalEdit(false) }} 
                         onEditProject={handleEditProject}
                         isEditProject={true}
                         editProject={editProject}

@@ -57,7 +57,7 @@ function ProjectModal({ show, onHide, onCreateProject = null, createProject = nu
           </Form.Group>
 
           <Button variant="primary" type="submit">
-            Create Project 
+            { isEditProject ? 'Edit Project' : 'Create Project' }
           </Button>
         </Form>
       </Modal.Body>
