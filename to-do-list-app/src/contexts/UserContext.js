@@ -52,21 +52,22 @@ export function UserProvider ({ children }) {
   const setProjects = (newProjects) => {
     let soonestProject = null;
     let soonestTaskIndex = -1;
+    let allProjectsEmptyOrCompleted = true;
 
     console.log("New Projects are", newProjects)
 
     newProjects.forEach((p) => {
       // Convert p.Tasks to an array if it's an object, or default to an empty array
       const tasksArray = Array.isArray(p.Tasks) ? p.Tasks : Object.values(p.Tasks);
-  
+       
       tasksArray.forEach((t, index) => {
-        if (soonestTaskIndex == -1) {
-          soonestProject = p;
-          soonestTaskIndex = index;
-          console.log("Soonest project is now", soonestProject);
-        } else if (p.Tasks[soonestTaskIndex] && p.Tasks[soonestTaskIndex].due_date > t.due_date) {
-          soonestProject = p;
-          soonestTaskIndex = index;
+        console.log("Task", t)
+        if (!t.completed) { 
+          if (soonestTaskIndex == -1 || (p.Tasks[soonestTaskIndex] && p.Tasks[soonestTaskIndex].due_date > t.due_date)) {
+            soonestProject = p;
+            soonestTaskIndex = index;
+            allProjectsEmptyOrCompleted = false;
+          }
         }
       });
     });
@@ -75,8 +76,11 @@ export function UserProvider ({ children }) {
     console.log("Soonest Project", soonestProject)
 
     setProjectsState(newProjects)
-
-    setNeartestTask( soonestProject ? soonestProject.Tasks[soonestTaskIndex] : null);
+    if (allProjectsEmptyOrCompleted) {
+      setNeartestTask("None");
+    } else {
+      setNeartestTask(soonestProject ? soonestProject.Tasks[soonestTaskIndex] : null);
+    }
   }
 
   useEffect(() => {
