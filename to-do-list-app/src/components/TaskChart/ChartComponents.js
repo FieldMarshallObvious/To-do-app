@@ -1,17 +1,41 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 function ChartComponent({ tasks, title, tasksComplete, tasksRemaining }) {
   const data = tasks.map((task, index) => ({
     name: task.name,
     complete: task.completedTasks,
-    remaining: tasksRemaining, // Integer variable of remianing tasks.
+    remaining: tasksRemaining, // Integer variable of remaining tasks.
   }));
 
+  const [containerSize, setContainerSize] = useState({ width: '100%', height: 300 }); // Default size
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const resizeHandler = () => {
+      if (containerRef.current) {
+        const newWidth = containerRef.current.clientWidth;
+        const newHeight = containerRef.current.clientHeight;
+        setContainerSize({ width: newWidth, height: newHeight });
+      }
+    };
+
+    // Attach the resize event listener
+    window.addEventListener('resize', resizeHandler);
+
+    // Initial size calculation
+    resizeHandler();
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', resizeHandler);
+    };
+  }, []);
+
   return (
-    <div>
+    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
       <h2>{title}</h2>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width={containerSize.width} height={containerSize.height * 0.95}>
         <BarChart data={data}>
           <XAxis dataKey="name" />
           <YAxis />

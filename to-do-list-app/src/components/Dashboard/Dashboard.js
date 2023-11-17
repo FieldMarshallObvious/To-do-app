@@ -82,7 +82,6 @@ const Dashboard = () => {
       ];
 
       const tasksRemaining = 3;
-        // Add more events as needed
 
     return (
         <Container fluid className={`justify-content-center`}>
@@ -94,9 +93,7 @@ const Dashboard = () => {
                 <Button className={`btn btn-primary ${styles.createProjectButton}`} onClick={() => setShowProjectModal(true)}> Create Project </Button>
                 <Button className={`btn btn-primary ${styles.lockButton}`} onClick={() => setLocked(!locked)} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
                     {!locked ?
-                        <Lock size={30} color={hover ? 'white':'grey'} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}/>
-                        :
-                        <Unlock size={30} color={hover ? 'white':'grey'} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}/> 
+                        <Lock size={30} color={hover ? 'white':'grey'}/>:<Unlock size={30} color={hover ? 'white':'grey'}/> 
                     }
                 </Button>
             </Row>
