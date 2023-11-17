@@ -30,7 +30,7 @@ export const TopNavbar = () => {
                 :
                 <>
                   <span>Task Name: {nearestTask.name} </span>
-                  <span>Due Date: {numericFormatDate(nearestTask.due_date)}</span>
+                  <span>Due Date: { nearestTask.due_date ? numericFormatDate(nearestTask.due_date) : ""  }</span>
                 </>
               }
             </>
