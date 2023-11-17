@@ -55,19 +55,22 @@ export function UserProvider ({ children }) {
 
     console.log("New Projects are", newProjects)
 
-    newProjects.map((p) => {
-      p.Tasks.map((t , index) => {
-        if ( soonestTaskIndex == -1 ) {
+    newProjects.forEach((p) => {
+      // Convert p.Tasks to an array if it's an object, or default to an empty array
+      const tasksArray = Array.isArray(p.Tasks) ? p.Tasks : Object.values(p.Tasks);
+  
+      tasksArray.forEach((t, index) => {
+        if (soonestTaskIndex == -1) {
           soonestProject = p;
           soonestTaskIndex = index;
-          console.log("Soonest project is now", soonestProject)
-        }
-        else if ( p.Tasks[soonestTaskIndex].due_date > t.due_date  ) {
+          console.log("Soonest project is now", soonestProject);
+        } else if (p.Tasks[soonestTaskIndex] && p.Tasks[soonestTaskIndex].due_date > t.due_date) {
           soonestProject = p;
           soonestTaskIndex = index;
         }
-      })
-    })
+      });
+    });
+  
 
     console.log("Soonest Project", soonestProject)
 
@@ -259,16 +262,16 @@ export function UserProvider ({ children }) {
       const projectsRef = collection(db, 'Users', userID, 'projects');
       const projectDocRef = doc(projectsRef, projectRef.id);
       try {
-        setProjects((prevProjects) => {
-          const editedProjects = prevProjects.map((p) => { 
-            if (p.id === projectRef.id) {
-              return { id: projectRef.id, ...projectRef, Tasks: [...projectRef.Tasks, task] };
-            }
-            return p;
-          });
-
-          return editedProjects;
+        let newProjects = projects.map((p) => {
+          if (p.id === projectRef.id) {
+            // Ensure projectRef.Tasks is an array before using the spread syntax
+            const tasks = Array.isArray(projectRef.Tasks) ? projectRef.Tasks : [];
+            return { id: projectRef.id, ...projectRef, Tasks: [...tasks, task] };
+          }
+          return p;
         });
+
+        setProjects(newProjects);
 
         await updateDoc(projectDocRef, {
           Tasks: arrayUnion(task)
@@ -319,16 +322,16 @@ export function UserProvider ({ children }) {
         }
         currentTasks[taskIndex] = newTask;
         
-        setProjects((prevProjects) => {
-          const editedProjects = prevProjects.map((p) => { 
-            if (p.Title === project) {
-              return { id: project, ...projectSnapshot.data(), Tasks: currentTasks };
-            }
-            return p;
-          });
-  
-          return editedProjects;
+        
+        let editedProjects = projects.map((p) => { 
+          if (p.Title === project) {
+            return { id: project, ...projectSnapshot.data(), Tasks: currentTasks };
+          }
+          return p;
         });
+
+        setProjects(editedProjects);
+
         await updateDoc(projectDocRef, { Tasks: currentTasks });
         return projectDocRef.id;
   
@@ -352,15 +355,15 @@ export function UserProvider ({ children }) {
       if (taskObject) {
         taskObject.completed = completed; // Directly modify the 'completed' property of the task object
   
-        setProjects((prevProjects) => {
-          const editedProjects = prevProjects.map((p) => { 
-            if (p.Title === project) {
-              return { ...p, Tasks: currentTasks }; // Ensure all properties of the project are preserved
-            }
-            return p;
-          });
-          return editedProjects;
+        
+        let editedProjects = projects.map((p) => { 
+          if (p.Title === project) {
+            return { ...p, Tasks: currentTasks }; // Ensure all properties of the project are preserved
+          }
+          return p;
         });
+
+        setProjects(editedProjects);
   
         return true;
       } else {
@@ -400,16 +403,14 @@ export function UserProvider ({ children }) {
         }
         currentTasks[taskIndex].completed = completed;
   
-        setProjects((prevProjects) => {
-          const editedProjects = prevProjects.map((p) => { 
-            if (p.Title === project) {
-              return { id: project, ...projectSnapshot.data(), Tasks: currentTasks };
-            }
-            return p;
-          });
-  
-          return editedProjects;
+        let editedProjects = projects.map((p) => { 
+          if (p.Title === project) {
+            return { id: project, ...projectSnapshot.data(), Tasks: currentTasks };
+          }
+          return p;
         });
+  
+        setProjects(editedProjects);
   
         await updateDoc(projectDocRef, { Tasks: currentTasks });
         return projectDocRef.id;
@@ -453,16 +454,14 @@ export function UserProvider ({ children }) {
         }
         currentTasks.splice(taskIndex, 1);
 
-        setProjects((prevProjects) => {
-          const editedProjects = prevProjects.map((p) => { 
-            if (p.Title === project) {
-              return { id: project, ...projectSnapshot.data(), Tasks: currentTasks };
-            }
-            return p;
-          });
-  
-          return editedProjects;
+        let editedProjects = projects.map((p) => { 
+          if (p.Title === project) {
+            return { id: project, ...projectSnapshot.data(), Tasks: currentTasks };
+          }
+          return p;
         });
+
+        setProjects(editedProjects);
   
         await updateDoc(projectDocRef, { Tasks: currentTasks });
         return projectDocRef.id;
