@@ -93,7 +93,9 @@ const Dashboard = () => {
                 <Button className={`btn btn-primary ${styles.createProjectButton}`} onClick={() => setShowProjectModal(true)}> Create Project </Button>
                 <Button className={`btn btn-primary ${styles.lockButton}`} onClick={() => setLocked(!locked)} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
                     {!locked ?
-                        <Lock size={30} color={hover ? 'white':'grey'}/>:<Unlock size={30} color={hover ? 'white':'grey'}/> 
+                        <Lock size={30} color={hover ? 'white':'grey'} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}/>
+                        :
+                        <Unlock size={30} color={hover ? 'white':'grey'} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}/>  
                     }
                 </Button>
             </Row>
