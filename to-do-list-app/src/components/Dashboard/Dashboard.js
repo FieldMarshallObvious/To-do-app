@@ -32,6 +32,7 @@ const Dashboard = () => {
    const [selectedOption, setSelectedOption] = useState('CreateTask');
    const [locked, setLocked] = useState(true);
    const [hover, setHover] = useState(false);
+   const [isCalendarVisible, setContentVisibility] = useState(false);
 
     //Test task, navbar needs one passed to it
     const testTask = {
@@ -53,6 +54,10 @@ const Dashboard = () => {
             console.error("Failed to update display name", error);
         });
     };
+
+    const toggleContentVisibility = () => {
+        setContentVisibility(!isCalendarVisible);
+      };
 
     // * Get projects from database if they aren't
     // * already in the projects state
@@ -99,11 +104,10 @@ const Dashboard = () => {
                     }
                 </Button>
             </Row>
-            <DashboardLayout projects={projects} locked={locked} showProjectModal={showProjectModal} updateParentLocked={setLocked} setShowProjectModal={setShowProjectModal}/>
+            <DashboardLayout projects={projects} locked={locked} showProjectModal={showProjectModal} onClick={toggleContentVisibility} updateParentLocked={setLocked} setShowProjectModal={setShowProjectModal}/>
         </Row> 
         <Row className="mx-auto">
         <Col xs={12} md={6} lg={4}>
-            
             <Card>
                 <Card.Body>
                 <Card.Title>User Info</Card.Title>
@@ -132,6 +136,17 @@ const Dashboard = () => {
         <Col xs={12} md={6} lg={8}>
             <Card>
                 <Card.Body>
+                <button onClick={toggleContentVisibility}>Show Calendar</button>
+                {isCalendarVisible && (
+                    <div>
+                    <p>Calendar Widget:</p>
+                    <CalendarWidget
+                    tileContent={({ date, view }) => (
+                    <CalendarWidget date={date} view={view} />
+                    )}
+                />
+                    </div>
+                )}
                 <Card.Title>Projects</Card.Title>
                 <Row>
                 <Col xs={6} md={6} lg={6}>

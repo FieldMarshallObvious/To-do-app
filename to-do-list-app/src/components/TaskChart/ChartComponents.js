@@ -8,7 +8,7 @@ function ChartComponent({ tasks, title, tasksComplete, tasksRemaining }) {
     remaining: tasksRemaining, // Integer variable of remaining tasks.
   }));
 
-  const [containerSize, setContainerSize] = useState({ width: '100%', height: 300 }); // Default size
+  const [containerSize, setContainerSize] = useState({ width: '100%', height: '100%' }); // Default size
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ function ChartComponent({ tasks, title, tasksComplete, tasksRemaining }) {
   return (
     <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
       <h2>{title}</h2>
-      <ResponsiveContainer width={containerSize.width} height={containerSize.height * 0.95}>
+      <ResponsiveContainer width={containerSize.width} height={containerSize.height}>
         <BarChart data={data}>
           <XAxis dataKey="name" />
           <YAxis />
