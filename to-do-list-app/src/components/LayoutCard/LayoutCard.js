@@ -7,7 +7,7 @@ export default class DashboardLayoutComponent extends Component {
     render() {
         const contentOutput = this.props.content();
         return (
-            <div>
+            <div style={{height: "80%"}}>
                 {this.props.content()}
             </div>
         )
