@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import '../TaskChart/CalendarWidget.css';
 
 function CalendarWidget() {
   const [date, setDate] = useState(new Date());
@@ -41,34 +42,6 @@ function CalendarWidget() {
           </ul>
         </div>
       )}
-      <style>
-        {`
-
-          .custom-calendar .react-calendar__tile {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-          .react-calendar__tile--has-tasks {
-            border-radius: 50%;
-          }
-
-          .red-circle {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-left: 12px;
-          }
-
-          .blue-circle {
-            background-color: blue;
-          }
-
-          .green-circle {
-            background-color: green;
-          }
-        `}
-      </style>
     </div>
   );
 }

@@ -4,3 +4,27 @@
     border: 1px solid #ccc;
     border-radius: 5px;
   }
+
+  .custom-calendar .react-calendar__tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .react-calendar__tile--has-tasks {
+    border-radius: 50%;
+  }
+
+  .red-circle {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 12px;
+  }
+
+  .blue-circle {
+    background-color: blue;
+  }
+
+  .green-circle {
+    background-color: green;
+  }
