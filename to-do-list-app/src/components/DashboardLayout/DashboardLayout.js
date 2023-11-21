@@ -3,7 +3,7 @@ import { Responsive, WidthProvider } from "react-grid-layout";
 import LayoutCard from "../LayoutCard/LayoutCard";
 import DisplayProject from "../ManageTasks/DisplayProject";
 import { Row, Button } from 'react-bootstrap';
-import { ThreeDots } from "react-bootstrap-icons";
+import { ThreeDots, Plus } from "react-bootstrap-icons";
 import Card from '@mui/material/Card';
 import styles from './DashboardLayout.module.css';
 import DashboardCardSettings from './DashboardCardSettings';
@@ -202,6 +202,47 @@ export default class DashboardLayout extends Component {
         this.context.setLayout(newLayout);
     };
 
+    addNewCard = (x, y, w = 6, h = 2) => {
+        const newCardId = `new_card_${Date.now()}`; 
+        const newCardLayout = {
+            i: newCardId, 
+            x: x, 
+            y: y, 
+            w: w, 
+            h: h,
+        };
+
+        this.context.setLayout(previousLayout => [...previousLayout, newCardLayout]);
+        this.context.setCardSettings(previousSettings => ({
+            ...previousSettings,
+            [newCardId]: {
+                displayOption: "projects",
+                selectedProjects: ["all"]
+            }
+        }));
+        console.log("New Layout: ", this.context.layout);
+    };
+
+    updateSnapPoints = (newCardLayout) => {
+        this.setState(prevState => {
+            let { snapPointsX, snapPointsY } = prevState;
+            
+            // Check if new X or Y positions exceed current snap points
+            const maxX = Math.max(...snapPointsX);
+            const maxY = Math.max(...snapPointsY);
+    
+            if (newCardLayout.x + newCardLayout.w > maxX) {
+                snapPointsX = [...snapPointsX, newCardLayout.x + newCardLayout.w];
+            }
+    
+            if (newCardLayout.y + newCardLayout.h > maxY) {
+                snapPointsY = [...snapPointsY, newCardLayout.y + newCardLayout.h];
+            }
+    
+            return { snapPointsX, snapPointsY };
+        });
+    };
+
     renderProjectOrChart = (cardKey) => {
         const { cardSettings, projects } = this.context;
     
@@ -230,9 +271,10 @@ export default class DashboardLayout extends Component {
 
     render = () => {
 
+    console.log("Layout In render: ", this.context.layout);
 
     return (
-    <div>
+    <div style={{overflow: "scroll"}}>
         <ResponsiveGridLayout
         className="layout"
         layouts={{lg: this.context.layout}}
@@ -240,6 +282,7 @@ export default class DashboardLayout extends Component {
         cols={{ lg: 12 }}
         rowHeight={281}
         width={1200}
+        style={{ height: "100%" }}
         margin={[45, 45, 45]}
         onDragStop={this.onDragStop}
         isDraggable={this.state.locked} 
@@ -253,7 +296,9 @@ export default class DashboardLayout extends Component {
               );            
         }}
         draggableCancel="input,textarea,button,select,optgroup">
-        {Object.keys(this.state.settingsVisibility).map(cardKey => (
+        {this.context.layout.map( item => {
+            const cardKey = item.i;
+            return (
             <Card key={cardKey} variant="outlined" style={{overflowY: "scroll"}}>
                 {this.state.locked ?
                     <Row className="mx-auto" style={{ position: 'fixed', right: 0, top: 0, zIndex: 2 }}>
@@ -269,13 +314,13 @@ export default class DashboardLayout extends Component {
                 {/* Conditionally render DashboardCardSettings or LayoutCard based on the state */}
                     {this.state.settingsVisibility[cardKey] ? (
                     <div style={{paddingLeft: "10px"}}>
-                    <Row className={`mx-auto ${styles.invisibleButton}`}>
+                    <Row className={`mx-auto ${styles.invisibleButton} `}>
                     <Button
-                        className={`${styles.editCardButton}`}
+                        className={`${styles.editCardButton} d-flex align-items-center justify-content-center`}
                         variant="outline-secondary"
                         onClick={() => this.toggleSettings(cardKey)}
                     >
-                        <ThreeDots size={20}/>
+                        <ThreeDots size={20} style={{ display: 'block', margin: 'auto' }}/>
                     </Button>
                     </Row>
 
@@ -292,9 +337,19 @@ export default class DashboardLayout extends Component {
                     }} />
                 )}
             </Card>
-        ))}
+            )
+        })}
         </ResponsiveGridLayout>
-        <div className="d-flex align-items-center justify-content-center">
+        <div className="d-flex align-items-center justify-content-center" 
+        style = {{
+                position: 'absolute',
+                bottom: '10px',
+                left: '0',
+                right: '0',
+                height: '50px',
+                zIndex: '1'
+            
+         }}>
             { this.state.edited ?
                 <div className={`animate pop d-flex align-items-center justify-content-center ${styles.saveContainer}`}> 
                     <div className="d-flex align-items-center justify-content-center"> 
@@ -317,6 +372,71 @@ export default class DashboardLayout extends Component {
                 : <></>
             }
         </div>
+
+        {
+            !this.state.locked ?
+            <></> :
+            <>
+            <div className="d-flex align-items-center justify-content-center"
+                style={{ 
+                    position: 'absolute', 
+                    bottom: 50, 
+                    left: 0, 
+                    right: 0 ,
+                    paddingBottom: '10px',
+                    width: '100vw',
+                }}>
+                {/* Bottom Button */}
+                <Button style={{ 
+                    position: 'relative', 
+                    bottom: 20, 
+                    left: 0, 
+                    right: 0 ,
+                    paddingBottom: '10px',
+                    width: '90vw',
+                }}
+                onClick={() => {
+                    let newY = Math.max(...this.context.layout.map(item => item.y + item.h));
+                    console.log("NewY:", newY)
+                    this.addNewCard(0, newY);
+                    this.updateSnapPoints({ x: 0, y: newY });
+                    this.setState({ edited: true });
+                }}
+                >
+                    Add Card
+                </Button>
+            </div>
+            <div className="d-flex align-items-center justify-content-center"
+                style={{ 
+                    position: 'absolute', 
+                    top: 0, 
+                    bottom: 0, 
+                    right: 0,
+                    height: '100vh', 
+                    width: 'fit-content'
+                }}>
+                {/* Right Side Button */}
+                <Button style={{ 
+                    position: 'width', 
+                    top: 0, 
+                    bottom: 0, 
+                    right: 0,
+                    height: '80vh', 
+                    }}
+
+                    onClick = {() => {
+                        let newX = Math.max(...this.context.layout.map(item => item.x + item.w));
+                        console.log("NewX:", newX)
+                        this.addNewCard(newX, 0);
+                        this.updateSnapPoints({ x: newX, y: 0 });
+                        this.setState({ edited: true });
+                    }}
+                >
+                    <Plus />
+                </Button>
+            </div>
+            </>
+        }
     </div>
     );
   }

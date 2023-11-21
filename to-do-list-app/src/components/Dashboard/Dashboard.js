@@ -93,8 +93,8 @@ const Dashboard = () => {
         <Row className = "mx-auto" style={{paddingBottom: "20px"}} >
             <TopNavbar initialTask={testTask} />
         </Row>
-        <Row className='mx-auto'>
-            <Row style={{justifyContent:'right', paddingTop: '50px'}}>
+        <Row className='mx-auto' style={{height: "100vh", display: "flex", flexDirection: "column"}}>
+            <Row style={{justifyContent:'right', paddingTop: '50px', height: 'fit-content'}}>
                 <Button className={`btn btn-primary ${styles.createProjectButton}`} onClick={() => setShowProjectModal(true)}> Create Project </Button>
                 <Button className={`btn btn-primary ${styles.lockButton}`} onClick={() => setLocked(!locked)} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
                     {!locked ?
@@ -104,9 +104,11 @@ const Dashboard = () => {
                     }
                 </Button>
             </Row>
-            <DashboardLayout projects={projects} locked={locked} showProjectModal={showProjectModal} onClick={toggleContentVisibility} updateParentLocked={setLocked} setShowProjectModal={setShowProjectModal}/>
+            <Row>
+                <DashboardLayout projects={projects} locked={locked} showProjectModal={showProjectModal} onClick={toggleContentVisibility} updateParentLocked={setLocked} setShowProjectModal={setShowProjectModal}/>
+            </Row>
         </Row> 
-        <Row className="mx-auto">
+        {/*<Row className="mx-auto">
         <Col xs={12} md={6} lg={4}>
             <Card>
                 <Card.Body>
@@ -197,7 +199,7 @@ const Dashboard = () => {
 
             </Card.Body>
             </Card>
-        </Row>
+        </Row>*/}
         </Container>
     );
 }
