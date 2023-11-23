@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../TaskChart/CalendarWidget.css';
@@ -6,6 +6,7 @@ import '../TaskChart/CalendarWidget.css';
 function CalendarWidget() {
   const [date, setDate] = useState(new Date());
   const [selectedTasks, setSelectedTasks] = useState([]);
+  const [containerHeight, setContainerHeight] = useState(window.innerHeight);
 
   const tasks = [
     { name: 'Task 1', startDate: new Date(2023, 10, 1), endDate: new Date(2023, 10, 3), color: 'blue' },
@@ -28,6 +29,18 @@ function CalendarWidget() {
     const dueTasks = tasks.filter(task => date >= task.startDate && date <= task.endDate);
     setSelectedTasks(dueTasks);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setContainerHeight(window.innerHeight); /* Might remove this later. We'll see. */
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []); /* Down to here */
 
   return (
     <div>
