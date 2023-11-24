@@ -9,8 +9,8 @@ function CalendarWidget() {
   const [containerHeight, setContainerHeight] = useState(window.innerHeight);
 
   const tasks = [
-    { name: 'Task 1', startDate: new Date(2023, 10, 1), endDate: new Date(2023, 10, 3), color: 'blue' },
-    { name: 'Task 2', startDate: new Date(2023, 10, 5), endDate: new Date(2023, 10, 6), color: 'green' },
+    { name: 'Task 1', startDate: new Date('2023-11-01'), endDate: new Date('2023-11-03'), color: 'blue' },
+    { name: 'Task 2', startDate: new Date('2023-11-05'), endDate: new Date('2023-11-06'), color: 'green' },
     // Add more tasks
   ];
 
