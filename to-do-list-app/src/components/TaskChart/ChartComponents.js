@@ -35,7 +35,7 @@ function ChartComponent({ tasks, title, tasksComplete, tasksRemaining }) {
   return (
     <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
       <h2>{title}</h2>
-      <ResponsiveContainer width={containerSize.width} height={containerSize.height}>
+      <ResponsiveContainer width='100%' height='100%'>
         <BarChart data={data}>
           <XAxis dataKey="name" />
           <YAxis />

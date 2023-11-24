@@ -3,7 +3,7 @@ import { Responsive, WidthProvider } from "react-grid-layout";
 import LayoutCard from "../LayoutCard/LayoutCard";
 import DisplayProject from "../ManageTasks/DisplayProject";
 import { Row, Button } from 'react-bootstrap';
-import { ThreeDots, Plus } from "react-bootstrap-icons";
+import { ThreeDots, Plus, Trash } from "react-bootstrap-icons";
 import Card from '@mui/material/Card';
 import styles from './DashboardLayout.module.css';
 import DashboardCardSettings from './DashboardCardSettings';
@@ -25,11 +25,11 @@ export default class DashboardLayout extends Component {
             value: true,
             loaded: false,
             edited: false,
+            oldSnapPointsX: [0, 10],
+            oldSnapPointsY: [0, 1, 2],
             oldLayout: [{ i: "a", x: 0, y: 0, w: 6, h: 2 },
                         { i: "b", x: 10, y: 0, w: 6, h: 1 },
                         { i: "c", x: 10, y: 2, w: 6, h: 1 }],
-            snapPointsX: [0,10],
-            snapPointsY: [0, 1, 2],
             occupied: {"0,1": "a", "0,2": "a", "10,0": "c", "10,1": "c", "10,2": "empty"},
             projects: props.projects,
             locked: props.locked,
@@ -156,8 +156,8 @@ export default class DashboardLayout extends Component {
 
         this.setState({ edited: true });
     
-        const closestX = this.getClosest(newItem.x, this.state.snapPointsX);
-        const closestY = this.getClosest(newItem.y, this.state.snapPointsY);
+        const closestX = this.getClosest(newItem.x, this.context.snapPoints.x);
+        const closestY = this.getClosest(newItem.y, this.context.snapPoints.y);
         
         let occupiedPositions = { ...this.state.occupied };
         const newLayout = [...layout];
@@ -223,28 +223,79 @@ export default class DashboardLayout extends Component {
         console.log("New Layout: ", this.context.layout);
     };
 
-    updateSnapPoints = (newCardLayout) => {
+    deleteCard = (cardId) => {
+        // Remove the card from the layout
+        const newLayout = this.context.layout.filter(item => item.i !== cardId);
+        this.context.setLayout(newLayout);
+    
+        // Remove the card settings
+        const newCardSettings = { ...this.context.cardSettings };
+        delete newCardSettings[cardId];
+        this.context.setCardSettings(newCardSettings);
+    
+        // Update the occupied positions if necessary
+        const newOccupied = this.computeOccupiedPositions(newLayout);
+        this.setState({ occupied: newOccupied, edited: true });
+    };
+
+    updateSnapPoints = (x, y) => {
         this.setState(prevState => {
-            let { snapPointsX, snapPointsY } = prevState;
+            // Destructure snapPoints from the context for easier access
+            const { snapPoints } = this.context;
             
-            // Check if new X or Y positions exceed current snap points
-            const maxX = Math.max(...snapPointsX);
-            const maxY = Math.max(...snapPointsY);
+            // Save old snap points in the dashboard layout
+            const oldSnapPointsX = snapPoints.x;
+            const oldSnapPointsY = snapPoints.y;
+            this.setState({ oldSnapPointsX: oldSnapPointsX, oldSnapPointsY: oldSnapPointsY });
     
-            if (newCardLayout.x + newCardLayout.w > maxX) {
-                snapPointsX = [...snapPointsX, newCardLayout.x + newCardLayout.w];
+            // Get the maximum values of the current snap points
+            const maxX = Math.max(...snapPoints.x);
+            const maxY = Math.max(...snapPoints.y);
+    
+            // Initialize newSnapPointsX and newSnapPointsY with current snap points
+            let newSnapPointsX = snapPoints.x;
+            let newSnapPointsY = snapPoints.y;
+
+            console.log("X: ", x)
+            console.log("Y: ", y)
+            console.log("MaxX: ", maxX)
+            console.log("MaxY: ", maxY)
+    
+            // Update X snap points if new layout exceeds current maxX
+            if (x  > maxX) {
+                console.log("Calculate new X")
+                newSnapPointsX.push(x)
+                console.log("New Snap Points X: ", newSnapPointsX)
             }
     
-            if (newCardLayout.y + newCardLayout.h > maxY) {
-                snapPointsY = [...snapPointsY, newCardLayout.y + newCardLayout.h];
+            // Update Y snap points if new layout exceeds current maxY
+            if (y > maxY) {
+                console.log("Calculate new Y")
+                newSnapPointsY.push(y)
+                console.log("New Snap Points Y: ", newSnapPointsY)
             }
     
-            return { snapPointsX, snapPointsY };
+            // Update the context only if there are changes
+            if (newSnapPointsX !== snapPoints.x || newSnapPointsY !== snapPoints.y) {
+                console.log("Set hook")
+                this.context.setSnapPoints({ x: newSnapPointsX, y: newSnapPointsY });
+            }
+
+            console.log("New Snap Points: ", this.context.snapPoints)
+    
+            // Return the updated state
+            return { newSnapPointsX, newSnapPointsY };
         });
     };
+    
 
     renderProjectOrChart = (cardKey) => {
         const { cardSettings, projects } = this.context;
+
+        if (!cardSettings[cardKey]) {
+            console.error("Card settings not found for key: ", cardKey);
+            return <span>Loading...</span>;
+        }
     
         if (cardSettings[cardKey].displayOption === "graph") {
             return <ChartComponent tasks={[{name: 'Task 1', complete: 2, remaining: 3}]} title={'Test'} tasksComplete={2} tasksRemaining={3} />;
@@ -270,8 +321,6 @@ export default class DashboardLayout extends Component {
     
 
     render = () => {
-
-    console.log("Layout In render: ", this.context.layout);
 
     return (
     <div style={{overflow: "scroll"}}>
@@ -302,6 +351,13 @@ export default class DashboardLayout extends Component {
             <Card key={cardKey} variant="outlined" style={{overflowY: "scroll"}}>
                 {this.state.locked ?
                     <Row className="mx-auto" style={{ position: 'fixed', right: 0, top: 0, zIndex: 2 }}>
+                        <Button
+                            className={`${styles.editCardButton}`}
+                            variant="outline-secondary"
+                            onClick={() => this.deleteCard(cardKey)} // Pass the card key to the toggle method
+                        >
+                            <Trash size={20}/>
+                        </Button> 
                         <Button
                             className={`${styles.editCardButton}`}
                             variant="outline-secondary"
@@ -356,7 +412,8 @@ export default class DashboardLayout extends Component {
                         <Button variant="outline-primary" 
                                 className={`mx-auto ${styles.saveLayoutButton}`} 
                                 onClick={() => { 
-                                    this.context.saveCardSettingsAndLayout(this.context.cardSettings, this.context.layout) 
+                                    this.context.saveCardSettingsAndLayout(this.context.cardSettings, this.context.layout,
+                                                                           this.context.snapPoints) 
                                     this.props.updateParentLocked(false)
                                     this.setState({ oldLayout: this.context.layout, edited: false })
                                     }}>Save Layout</Button>
@@ -399,7 +456,7 @@ export default class DashboardLayout extends Component {
                     let newY = Math.max(...this.context.layout.map(item => item.y + item.h));
                     console.log("NewY:", newY)
                     this.addNewCard(0, newY);
-                    this.updateSnapPoints({ x: 0, y: newY });
+                    this.updateSnapPoints( 0, newY );
                     this.setState({ edited: true });
                 }}
                 >
@@ -428,7 +485,7 @@ export default class DashboardLayout extends Component {
                         let newX = Math.max(...this.context.layout.map(item => item.x + item.w));
                         console.log("NewX:", newX)
                         this.addNewCard(newX, 0);
-                        this.updateSnapPoints({ x: newX, y: 0 });
+                        this.updateSnapPoints(newX, 0 );
                         this.setState({ edited: true });
                     }}
                 >

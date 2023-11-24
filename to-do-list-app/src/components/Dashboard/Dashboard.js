@@ -26,7 +26,7 @@ const Dashboard = () => {
     const navigate = useNavigate()
 
    const { updateDisplayName, logout } = useAuth();
-   const { getProjects, projects, getCardSettings, getLayout } = useUser();
+   const { getProjects, projects, getCardSettings, getLayout, getSnapPoints } = useUser();
    const [displayName, setDisplayName] = useState("");
    const [showProjectModal, setShowProjectModal] = useState(false);
    const [selectedOption, setSelectedOption] = useState('CreateTask');
@@ -67,6 +67,7 @@ const Dashboard = () => {
               await getProjects();
               await getCardSettings();
               await getLayout();
+              await getSnapPoints();
             } catch (error) {
               console.error("Error getting projects: ", error);
             }
