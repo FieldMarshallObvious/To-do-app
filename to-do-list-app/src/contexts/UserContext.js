@@ -29,6 +29,7 @@ export function UserProvider ({ children }) {
   const [layout, setLayoutState] = useState([{ i: "a", x: 0, y: 0, w: 6, h: 2 },
                                              { i: "b", x: 10, y: 0, w: 6, h: 1 },
                                              { i: "c", x: 10, y: 2, w: 6, h: 1 }])
+  const [snapPoints, setSnapPoints] = useState({x: [0, 10], y:[0, 1, 2]});
 
   const setCardSettings = (newSettings) => {
     if (newSettings === null) {
@@ -477,6 +478,31 @@ export function UserProvider ({ children }) {
     }
   }
 
+  const getSnapPoints = async () => {
+    if (currentUser) {
+      const userID = currentUser.uid;
+      const snapPointsRef = doc(db, 'Users', userID);
+      try {
+        const snapPointsSnapshot = await getDoc(snapPointsRef);
+        if (snapPointsSnapshot.exists()) {
+          const snapPoints = snapPointsSnapshot.data();
+          if (snapPoints.snapPoints) {
+            setSnapPoints(snapPoints.snapPoints);
+          } else {
+            setSnapPoints({ x: [0, 10], y: [0, 1, 2] });
+          }
+          return snapPoints;
+        } else {
+          console.error("Snap points do not exist");
+          return;
+        }
+      } catch (error) {
+        console.error("Error fetching snap points: ", error);
+        throw error;
+      }
+    }
+  }
+
   const getCardSettings = async () => {
     if (currentUser) {
       const userID = currentUser.uid;
@@ -486,6 +512,7 @@ export function UserProvider ({ children }) {
         if (settingsSnapshot.exists()) {
           const settings = settingsSnapshot.data();
           if (settings.cardSettings) {
+            console.log("Card settings are", settings.cardSettings)
             setCardSettings(settings.cardSettings);
           } else {
             setCardSettings({
@@ -514,7 +541,7 @@ export function UserProvider ({ children }) {
     }
   }
 
-  const saveCardSettingsAndLayout = (newSettings, newLayout) => {
+  const saveCardSettingsAndLayout = (newSettings, newLayout, newSnapPoints) => {
     if (currentUser) {
       const userID = currentUser.uid;
       const settingsRef = doc(db, 'Users', userID);
@@ -524,13 +551,15 @@ export function UserProvider ({ children }) {
 
       const cleanedSettings = sanitizeData(newSettings);
       const cleanedLayout = sanitizeData(newLayout); 
+      const cleanedSnapPoints = sanitizeData(newSnapPoints);
       
       console.log("Cleaned Settings are", cleanedSettings)
       console.log("Cleaned Layout is", cleanedLayout)
       try {
         updateDoc(settingsRef, {
           cardSettings: cleanedSettings,
-          layout: cleanedLayout
+          layout: cleanedLayout,
+          snapPoints: cleanedSnapPoints
         });
       } catch (error) {
         console.error("Error saving card settings: ", error);
@@ -571,10 +600,13 @@ export function UserProvider ({ children }) {
     currentUser,
     projects,
     cardSettings,
-    setCardSettings,
     layout,
+    snapPoints,
     nearestTask,
+    getSnapPoints,
+    setCardSettings,
     setLayout,
+    setSnapPoints,
     getProjects,
     createProject,
     createTask,

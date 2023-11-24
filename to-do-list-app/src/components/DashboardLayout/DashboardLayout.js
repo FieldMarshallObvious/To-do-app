@@ -330,8 +330,8 @@ export default class DashboardLayout extends Component {
         breakpoints={{ lg: 1200 }}
         cols={{ lg: 12 }}
         rowHeight={281}
-        width={1200}
-        style={{ height: "100%" }}
+        measureBeforeMount={false}
+        style={{ height: "100%", overflow: "auto" }}
         margin={[45, 45, 45]}
         onDragStop={this.onDragStop}
         isDraggable={this.state.locked} 
@@ -407,7 +407,9 @@ export default class DashboardLayout extends Component {
             
          }}>
             { this.state.edited ?
-                <div className={`animate pop d-flex align-items-center justify-content-center ${styles.saveContainer}`}> 
+                <div className={`animate pop d-flex align-items-center justify-content-center ${styles.saveContainer}`}
+                     style={{position: 'fixed'}}
+                > 
                     <div className="d-flex align-items-center justify-content-center"> 
                         <Button variant="outline-primary" 
                                 className={`mx-auto ${styles.saveLayoutButton}`} 
@@ -436,8 +438,8 @@ export default class DashboardLayout extends Component {
             <>
             <div className="d-flex align-items-center justify-content-center"
                 style={{ 
-                    position: 'absolute', 
-                    bottom: 50, 
+                    position: 'fixed', 
+                    bottom: 60, 
                     left: 0, 
                     right: 0 ,
                     paddingBottom: '10px',
@@ -452,6 +454,9 @@ export default class DashboardLayout extends Component {
                     paddingBottom: '10px',
                     width: '90vw',
                 }}
+                
+                className={`${styles.addCard}`}
+
                 onClick={() => {
                     let newY = Math.max(...this.context.layout.map(item => item.y + item.h));
                     console.log("NewY:", newY)
@@ -460,12 +465,12 @@ export default class DashboardLayout extends Component {
                     this.setState({ edited: true });
                 }}
                 >
-                    Add Card
+                    Add A New Card
                 </Button>
             </div>
             <div className="d-flex align-items-center justify-content-center"
                 style={{ 
-                    position: 'absolute', 
+                    position: 'fixed', 
                     top: 0, 
                     bottom: 0, 
                     right: 0,
@@ -474,12 +479,16 @@ export default class DashboardLayout extends Component {
                 }}>
                 {/* Right Side Button */}
                 <Button style={{ 
-                    position: 'width', 
-                    top: 0, 
-                    bottom: 0, 
-                    right: 0,
-                    height: '80vh', 
+                        position: 'static', 
+                        top: 0, 
+                        bottom: 0, 
+                        right: 0,
+                        height: '80vh', 
+                        width: '50px',
+                        marginRight: '20px'
                     }}
+
+                    className={`${styles.addCard}`}
 
                     onClick = {() => {
                         let newX = Math.max(...this.context.layout.map(item => item.x + item.w));
@@ -489,7 +498,9 @@ export default class DashboardLayout extends Component {
                         this.setState({ edited: true });
                     }}
                 >
-                    <Plus />
+                    <div className={`${styles.verticalText}`} 
+                        style={{ width: "150px", padding: 0, margin: 0}}>
+                        Add A New Card</div>
                 </Button>
             </div>
             </>

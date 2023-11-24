@@ -18,13 +18,36 @@
 
 .editCardButton:focus,
 .editCardButton.focus,
-.editCardButton:hover{
+.editCardButton:hover {
     background-color: #AAA399 !important;
 }
 
 .invisibleButton {
     visibility: hidden;
     pointer-events: none;
+}
+
+.verticalText {
+    transform: rotate(-90deg) translateX(-50%) translateY(10%);
+    transform-origin: left bottom;
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+}
+
+.addCard {
+    background-color: #F0AF4D;
+    border-color: #F0AF4D !important;
+    color: white !important;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+}
+
+.addCard:focus,
+.addCard.focus,
+.addCard:hover {
+    background-color: white !important;
+    color: #F0AF4D !important;
 }
 
 .saveContainer {
@@ -35,6 +58,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: white;
+    margin-bottom: 20px;
 }
 
 .saveContainer > div {
