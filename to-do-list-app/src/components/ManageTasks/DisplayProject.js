@@ -27,6 +27,7 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEdi
     const [openIndex, setOpenIndex] = useState([]);
     const [openModalProjectIndexEdit, setOpenModalProjectIndexEdit] = useState(null);
     const [openModalProjectIndexDelete, setOpenModalProjectIndexDelete] = useState(false);
+    const [openTaskModalIndexDelete, setOpenTaskModalIndexDelete] = useState(null);
 
     const { createProject, createTask, editProject, editTask, deleteTask, deleteProject, setTaskCompleteLocal, setTaskCompleteDatabase } = useUser();
 
@@ -199,18 +200,19 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEdi
                                     <Trash 
                                         className={`editIcon ${styles.editIcon}`}
                                         onClick={() => { 
+                                            setOpenTaskModalIndexDelete(task.name)
                                             handleShowModal()
                                         }} 
                                     />                  
                                 </div>
-                                <ConfirmationModal showModal={showModal}  
+                                <ConfirmationModal showModal={showModal && openTaskModalIndexDelete === task.name && openTaskModalIndexDelete != null ? true : false}  
                                        handleCloseModal={handleCloseModal} 
                                        handleDanger={() => { 
                                                                 handleDeleteTask(deleteTask, task.name, project.Title) 
                                                                 setShowModal(false)
                                                             }}
-                                       ModelTitle={"Confirm Deletion"}
-                                       ModelBody={"Are you sure you want to delete this task?"} 
+                                       ModelTitle={"Confirm Task Deletion"}
+                                       ModelBody={`Are you sure want to delete ${task.name}?`} 
                                        SecondaryText={"Cancel"}
                                        DangerText={"Delete"}
                                       />
