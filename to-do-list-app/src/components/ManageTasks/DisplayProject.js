@@ -27,6 +27,7 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEdi
     const [openIndex, setOpenIndex] = useState([]);
     const [openModalProjectIndexEdit, setOpenModalProjectIndexEdit] = useState(null);
     const [openModalProjectIndexDelete, setOpenModalProjectIndexDelete] = useState(false);
+    const [openModalTaskCreateIndex, setOpenModalTaskCreateIndex] = useState(null);
     const [openTaskModalIndexDelete, setOpenTaskModalIndexDelete] = useState(null);
 
     const { createProject, createTask, editProject, editTask, deleteTask, deleteProject, setTaskCompleteLocal, setTaskCompleteDatabase } = useUser();
@@ -219,7 +220,7 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEdi
                             </div>
                         ))}
                         <TaskModal
-                            show={showTaskModal}
+                            show={showTaskModal && openModalTaskCreateIndex === project.Title && openModalTaskCreateIndex != null ? true : false}
                             onHide={() => { setShowTaskModal(false) }}
                             projects={projects.map(innerProject => innerProject.Title)}
                             currentProject={project.Title}
@@ -229,6 +230,7 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEdi
                         <div className="d-flex justify-content-end" style={{width: "100%"}} >
                             <PlusCircleFill color='#F0AF4D' size="48px" className='ml-auto' onClick={() => { 
                                 console.log("Clicked add task");
+                                setOpenModalTaskCreateIndex(project.Title);
                                 setShowTaskModal(true);
                                 }}/>
                         </div>

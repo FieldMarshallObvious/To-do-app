@@ -1,15 +1,40 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { getComplementaryColor } from '../../utils/colorUtils';
 
-function ChartComponent({ tasks, title, tasksComplete, tasksRemaining }) {
-  const data = tasks.map((task, index) => ({
-    name: task.name,
-    complete: task.completedTasks,
-    remaining: tasksRemaining, // Integer variable of remaining tasks.
-  }));
+function ChartComponent({ tasks, title,tasksRemaining, seperateProjects = true }) {
+
+  // Process the current completed state of tasksa
+  const processData = (projects) => {
+    if (!projects) {
+      return [];
+    }
+
+    return projects.map(project => {
+      console.log("Project: ", project)
+      const completedTasks = project.Tasks.filter(task => task.completed).length;
+      const remainingTasks = project.Tasks.length - completedTasks;
+
+
+      return {
+        name: project.Title,
+        [ seperateProjects ? `complete ${project.Title}` : `complete`]: completedTasks,
+        [ seperateProjects ? `remaining ${project.Title}` : `remaining`]: remainingTasks,
+      };
+    });
+  };
+
+  const [data, setData] = useState([]);
 
   const [containerSize, setContainerSize] = useState({ width: '100%', height: '100%' }); // Default size
   const containerRef = useRef(null);
+
+  // Load the tasks whenever the tasks prop changes
+  useEffect(() => {
+    if (tasks) {
+      setData(processData(tasks));
+    }
+  }, [tasks]);
 
   useEffect(() => {
     const resizeHandler = () => {
@@ -42,8 +67,23 @@ function ChartComponent({ tasks, title, tasksComplete, tasksRemaining }) {
           <CartesianGrid strokeDasharray="3 3" />
           <Tooltip />
           <Legend />
-          <Bar dataKey="complete" fill="#8884d8" name="Tasks Complete" />
-          <Bar dataKey="remaining" fill="#82ca9d" name="Tasks Remaining" />
+          {
+            !seperateProjects ?
+            <>
+              <Bar dataKey="complete" fill="#8884d8" name="Tasks Complete" />
+              <Bar dataKey="remaining" fill="#82ca9d" name="Tasks Remaining" />
+            </>
+            :
+            <>
+              {tasks.map(project => (
+                <>
+                <Bar name="Tasks Complete" key={`complete ${project.Title}`} dataKey={`complete ${project.Title}`} fill={ project.Color ? project.Color : "#8884d8"} />
+
+                <Bar name="Tasks Remaining" key={`remaining ${project.Title}`}  dataKey={`remaining ${project.Title}`} fill={ project.Color ? getComplementaryColor(project.Color) : "#82ca9d" } />
+                </>
+              ))}
+            </>
+          }
         </BarChart>
       </ResponsiveContainer>
     </div>

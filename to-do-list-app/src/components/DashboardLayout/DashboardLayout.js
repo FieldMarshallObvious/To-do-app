@@ -298,7 +298,7 @@ export default class DashboardLayout extends Component {
         }
     
         if (cardSettings[cardKey].displayOption === "graph") {
-            return <ChartComponent tasks={[{name: 'Task 1', complete: 2, remaining: 3}]} title={'Test'} tasksComplete={2} tasksRemaining={3} />;
+            return <ChartComponent tasks={this.state.projects} title={'Test'} tasksComplete={2} tasksRemaining={3} />;
         }
         else if (cardSettings[cardKey].displayOption === "calendar") {
             return <CalendarWidget />;
