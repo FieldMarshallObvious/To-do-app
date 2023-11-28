@@ -68,7 +68,7 @@ const DashboardCardSettings = ({ allProjects, settings, updateSettings }) => {
           </label>
         </div>
 
-        {displayOption === 'projects' || displayOption == 'graph' && (
+        {(displayOption === 'projects' || displayOption == 'graph' )&& (
           <div style={{overflowX: "scroll"}}>
             <h3>Select Projects:</h3>
             <ButtonGroup>

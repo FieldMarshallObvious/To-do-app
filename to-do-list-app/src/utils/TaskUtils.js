@@ -55,8 +55,8 @@ export const handleEditProject = async ( editProject, projectName, oldProjectNam
             newPayload.description = newProjectDescription;
         }
         // ! This is false while I work on this functionality
-        if ( false ) {
-            newPayload.Color = "blue";
+        if ( color ) {
+            newPayload.Color = color;
         }
         const projectID = await editProject(newPayload, oldPayload);  
         console.log("Project ID: ", projectID);

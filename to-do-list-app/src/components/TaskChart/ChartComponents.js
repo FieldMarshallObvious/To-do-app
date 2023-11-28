@@ -11,7 +11,6 @@ function ChartComponent({ tasks, title,tasksRemaining, seperateProjects = true }
     }
 
     return projects.map(project => {
-      console.log("Project: ", project)
       const completedTasks = project.Tasks.filter(task => task.completed).length;
       const remainingTasks = project.Tasks.length - completedTasks;
 

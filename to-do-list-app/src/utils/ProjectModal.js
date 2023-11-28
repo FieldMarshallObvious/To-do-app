@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
-function ProjectModal({ show, onHide, onCreateProject = null, createProject = null, isEditProject=false, editProject=null, onEditProject=null, oldProjectTitle = '', oldProjectDescription = '' }) {
+function ProjectModal({ show, onHide, onCreateProject = null, createProject = null, isEditProject=false, editProject=null, onEditProject=null, oldProjectTitle = '', oldProjectDescription = '', oldProjectColor = '#0057FF' }) {
   const [projectTitle, setProjectTitle] = useState( oldProjectTitle );
   const [projectDescription,  setProjectDescription] = useState(oldProjectDescription);
-  const [projectColor, setProjectColor] = useState('#0057FF'); // Default color
+  const [projectColor, setProjectColor] = useState( oldProjectColor ? oldProjectColor:'#0057FF'); // Default color
 
   const handleSubmit = (e) => {
     e.preventDefault(); 

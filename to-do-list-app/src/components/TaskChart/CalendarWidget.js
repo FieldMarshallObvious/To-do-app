@@ -3,7 +3,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../TaskChart/CalendarWidget.css';
 
-function CalendarWidget() {
+function CalendarWidget(projects) {
   const [date, setDate] = useState(new Date());
   const [selectedTasks, setSelectedTasks] = useState([]);
   const [containerHeight, setContainerHeight] = useState(window.innerHeight);
@@ -29,6 +29,38 @@ function CalendarWidget() {
     const dueTasks = tasks.filter(task => date >= task.startDate && date <= task.endDate);
     setSelectedTasks(dueTasks);
   };
+
+  const processProjects = ({projects}) => {
+    if (!projects) {
+      return [];
+    }
+
+    console.log(typeof projects, Array.isArray(projects));
+
+    const tasks = projects.map(project => {
+      return project.Tasks.map(task => {
+        return {
+          name: task.name,
+          startDate: task.due_date,
+          endDate: task.due_date,
+          color: project.Color ? project.Color : 'blue',
+        };
+      });
+    });
+
+    console.log("Tasks: ", tasks);
+    return tasks;
+
+  }
+
+  useEffect(() => {
+    console.log("Projects are: ", projects)
+    console.log(typeof projects, Array.isArray(projects.projects));
+
+    if (projects) {
+      const tasks = processProjects(projects);
+    }
+  }, [projects]);
 
   useEffect(() => {
     const handleResize = () => {

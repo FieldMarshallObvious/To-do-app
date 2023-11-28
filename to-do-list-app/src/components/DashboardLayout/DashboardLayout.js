@@ -309,7 +309,7 @@ export default class DashboardLayout extends Component {
             return <ChartComponent tasks={filteredProjects} title={'Complete & Remaining Tasks'} tasksComplete={2} tasksRemaining={3} />;
         }
         else if (cardSettings[cardKey].displayOption === "calendar") {
-            return <CalendarWidget />;
+            return <CalendarWidget projects={this.state.projects} />;
         }
     
         if (!projects || projects.length === 0) {

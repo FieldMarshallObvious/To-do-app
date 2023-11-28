@@ -251,7 +251,8 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEdi
                         isEditProject={true}
                         editProject={editProject}
                         oldProjectTitle={project.Title}
-                        oldProjectDescription={project.Description}
+                        oldProjectDescription={project.description}
+                        oldProjectColor={project.Color}
                     />
                     
 

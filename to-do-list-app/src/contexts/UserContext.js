@@ -116,7 +116,6 @@ export function UserProvider ({ children }) {
   };
 
   const createProject = async (project) => {
-    console.log("Project: ", project);
     if (currentUser && project) {
       const userID = currentUser.uid;
   
@@ -174,10 +173,12 @@ export function UserProvider ({ children }) {
         if ( projectSnapshot.exists ) {
           let payload = {};
 
+          console.log("Project Snapshot is ", projectSnapshot.data())
+
           if ( project.title || oldProjectTitle.title ) payload.Title = project.title ? project.title : oldProjectTitle.title;
           if ( project.Tasks || projectSnapshot.data().Tasks ) payload.Tasks = project.tasks ? project.tasks : projectSnapshot.data().Tasks;
           if ( project.description || projectSnapshot.data().description ) payload.description = project.description ? project.description : projectSnapshot.data().description;
-          if ( project.color || projectSnapshot.data().color ) payload.Color = project.color ? project.color : projectSnapshot.data().Color;
+          if ( project.Color || projectSnapshot.data().Color ) payload.Color = project.Color ? project.Color : projectSnapshot.data().Color;
 
           console.log("Edit Payload is ", payload)
 
