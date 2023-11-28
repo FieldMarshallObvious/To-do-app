@@ -72,8 +72,13 @@ export default class DashboardLayout extends Component {
     
             if (!this.props.locked) { 
                 newState.settingsVisibility = { a: false, b: false, c: false };
-                newState.edited = false;
-                
+                newState.edited = false; 
+            }
+
+            if (!this.props.locked && this.state.edited) {
+                this.context.setCardSettings(this.state.previouSettings)
+                this.context.setLayout(this.state.oldLayout)
+                this.setState({ edited: false })
             }
         }
 
@@ -292,13 +297,16 @@ export default class DashboardLayout extends Component {
     renderProjectOrChart = (cardKey) => {
         const { cardSettings, projects } = this.context;
 
+
         if (!cardSettings[cardKey]) {
             console.error("Card settings not found for key: ", cardKey);
             return <span>Loading...</span>;
         }
+
+        const filteredProjects = this.getFilteredProjects(cardKey); 
     
         if (cardSettings[cardKey].displayOption === "graph") {
-            return <ChartComponent tasks={this.state.projects} title={'Test'} tasksComplete={2} tasksRemaining={3} />;
+            return <ChartComponent tasks={filteredProjects} title={'Complete & Remaining Tasks'} tasksComplete={2} tasksRemaining={3} />;
         }
         else if (cardSettings[cardKey].displayOption === "calendar") {
             return <CalendarWidget />;
@@ -308,7 +316,7 @@ export default class DashboardLayout extends Component {
             return <span>Loading...</span>;
         }
     
-        const filteredProjects = this.getFilteredProjects(cardKey);
+        
         if (filteredProjects.length === 0) {
             return <span>No projects selected</span>;
         }

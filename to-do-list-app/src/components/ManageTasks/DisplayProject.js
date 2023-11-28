@@ -146,11 +146,10 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEdi
                                 }}
                                 >
                                     <div className='rounded-circle' style={{
-                                        width: '13px',
-                                        height: '13px',
+                                        position: 'relative',
+                                        width: '14px',
+                                        height: '14px',
                                         backgroundColor: task.completed ? `${task.color ? task.color : "#053DA9"}` : 'white',
-                                        margin: '0',
-                                        marginTop: '0.5px',
                                         transition: 'background-color 0.2s',
                                     }} />
                                 </div>
