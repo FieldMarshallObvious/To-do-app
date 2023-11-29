@@ -22,6 +22,7 @@ function ChartComponent({ tasks, title,tasksRemaining, seperateProjects = true }
         name: project.Title,
         [ seperateProjects ? `complete ${project.Title}` : `complete`]: completedTasks,
         [ seperateProjects ? `remaining ${project.Title}` : `remaining`]: remainingTasks,
+        color: project.Color ? project.Color : 'blue',
       };
     });
   };
