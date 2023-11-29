@@ -11,9 +11,12 @@ function ChartComponent({ tasks, title,tasksRemaining, seperateProjects = true }
     }
 
     return projects.map(project => {
-      const completedTasks = project.Tasks.filter(task => task.completed).length;
-      const remainingTasks = project.Tasks.length - completedTasks;
-
+      let completedTasks = 0;
+      let remainingTasks = 0;
+      if (project.Tasks && Array.isArray(project.Tasks) && project.Tasks.length !== 0) {
+        completedTasks = project.Tasks.filter(task => task.completed).length;
+        remainingTasks = project.Tasks.length - completedTasks;
+      }
 
       return {
         name: project.Title,
