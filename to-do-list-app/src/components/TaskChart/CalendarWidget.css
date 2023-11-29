@@ -23,13 +23,15 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    margin-left: 12px;
+    margin-left: 15px;
   }
 
   .blue-circle {
     background-color: blue;
+    margin-left: 31px;    /* Hardcoded center. knowing the margin size it's about 51%. */
   }
 
   .green-circle {
     background-color: green;
+    margin-left: 31px;
   }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, ButtonGroup, Button } from 'react-bootstrap'; // Assuming you're using React Bootstrap
+import styles from './DashboardLayout.module.css';
 
 const DashboardCardSettings = ({ allProjects, settings, updateSettings }) => {
   const [displayOption, setDisplayOption] = useState('projects');
@@ -73,7 +74,7 @@ const DashboardCardSettings = ({ allProjects, settings, updateSettings }) => {
             <h3>Select Projects:</h3>
             <ButtonGroup>
               {allProjects.map((project) => (
-                <Button
+                <Button className={`${styles.btnCustomColor}`}
                   key={project.Title}
                   variant={selectedProjects.includes(project.Title) ? 'primary' : 'secondary'}
                   onClick={() => handleProjectSelectionChange(project.Title)}
