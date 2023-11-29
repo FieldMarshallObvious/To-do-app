@@ -41,8 +41,6 @@ function CalendarWidget(projects) {
       if (!project.Tasks || !Array.isArray(project.Tasks) || project.Tasks.length === 0) {
         return [];
       }
-      console.log("Project Tasks: ", project.Tasks)
-      console.log(typeof project.Tasks, Array.isArray(project.Tasks), project.Tasks.length === 0);
 
       return project.Tasks.map(task => {
         return {
