@@ -331,7 +331,23 @@ export default class DashboardLayout extends Component {
     render = () => {
 
     return (
-    <div style={{overflow: "scroll"}}>
+        <div className={styles.dashboardLayoutStyle}>
+        {
+            this.state.locked &&
+            <Button 
+                className={`${styles.addCardButton}`}
+                onClick={() => {
+          
+                let newX = Math.max(...this.context.layout.map(item => item.x + item.w));
+                    let newY = Math.max(...this.context.layout.map(item => item.y + item.h));
+                    this.addNewCard(newX, newY);
+                    this.updateSnapPoints(newX, newY);
+                    this.setState({ edited: true });
+                }}
+            >
+                Add A New Card
+            </Button>
+        }
         <ResponsiveGridLayout
         className="layout"
         layouts={{lg: this.context.layout}}
@@ -356,7 +372,7 @@ export default class DashboardLayout extends Component {
         {this.context.layout.map( item => {
             const cardKey = item.i;
             return (
-            <Card key={cardKey} variant="outlined" style={{overflowY: "scroll"}}>
+            <Card key={cardKey} variant="outlined" style={{overflowY: "auto"}}>
                 {this.state.locked ?
                     <Row className="mx-auto" style={{ position: 'fixed', right: 0, top: 0, zIndex: 2 }}>
                         <Button
@@ -440,79 +456,7 @@ export default class DashboardLayout extends Component {
             }
         </div>
 
-        {
-            !this.state.locked ?
-            <></> :
-            <>
-            <div className="d-flex align-items-center justify-content-center"
-                style={{ 
-                    position: 'fixed', 
-                    bottom: 60, 
-                    left: 0, 
-                    right: 0 ,
-                    paddingBottom: '10px',
-                    width: '100vw',
-                }}>
-                {/* Bottom Button */}
-                <Button style={{ 
-                    position: 'relative', 
-                    bottom: 20, 
-                    left: 0, 
-                    right: 0 ,
-                    paddingBottom: '10px',
-                    width: '90vw',
-                }}
-                
-                className={`${styles.addCard}`}
-
-                onClick={() => {
-                    let newY = Math.max(...this.context.layout.map(item => item.y + item.h));
-                    console.log("NewY:", newY)
-                    this.addNewCard(0, newY);
-                    this.updateSnapPoints( 0, newY );
-                    this.setState({ edited: true });
-                }}
-                >
-                    Add A New Card
-                </Button>
-            </div>
-            <div className="d-flex align-items-center justify-content-center"
-                style={{ 
-                    position: 'fixed', 
-                    top: 0, 
-                    bottom: 0, 
-                    right: 0,
-                    height: '100vh', 
-                    width: 'fit-content'
-                }}>
-                {/* Right Side Button */}
-                <Button style={{ 
-                        position: 'static', 
-                        top: 0, 
-                        bottom: 0, 
-                        right: 0,
-                        height: '80vh', 
-                        width: '50px',
-                        marginRight: '20px'
-                    }}
-
-                    className={`${styles.addCard}`}
-
-                    onClick = {() => {
-                        let newX = Math.max(...this.context.layout.map(item => item.x + item.w));
-                        console.log("NewX:", newX)
-                        this.addNewCard(newX, 0);
-                        this.updateSnapPoints(newX, 0 );
-                        this.setState({ edited: true });
-                    }}
-                >
-                    <div className={`${styles.verticalText}`} 
-                        style={{ width: "150px", padding: 0, margin: 0}}>
-                        Add A New Card</div>
-                </Button>
-            </div>
-            </>
-        }
+        
     </div>
     );
   }
