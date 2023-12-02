@@ -101,13 +101,10 @@
 }
 
 .addCardButton {
-    position: fixed; 
+    position: absolute;
     top: 70px;
     left: 50px;
     height: 44px;
-    width: fit-content;
-    align-items: center !important;
-    margin: 0;
     border: 1px solid #AAA399 !important;
     }
 
