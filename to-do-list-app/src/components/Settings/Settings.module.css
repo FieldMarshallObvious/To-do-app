@@ -1,8 +1,8 @@
 .Sidebar {
     position: fixed;
-    top: 57px; 
-    right: 50px; 
-    height: calc(100vh - 60px - 800px);
+    top: 62px; 
+    right: 0; 
+    height: calc(100vh - 550px);
     width: 250px; 
     background-color: rgba(251, 251, 251, 0.914);  
     padding: 10px; 
@@ -12,13 +12,12 @@
     font-family: 'Helvetica Neue', sans-serif; 
     display: flex; 
     flex-direction: column; 
-    align-items: flex-end; 
+    align-items: center; 
 }
 
 .LogoutButton {
     margin-top: 10px; 
     padding: 5px 10px;
-    margin-right: 30px;
     background: none;
     border: none; 
     outline: none;
@@ -34,11 +33,17 @@
 .LogoutButton img {
     width: 20px;  
     height: auto; 
-    margin-right: 90px; 
+    margin-right: 10px; 
   }
 
-@media (max-width: 768px) {
+  @media (max-width: 768px) {
     .Sidebar {
         width: 200px; 
+        right: 0; 
+        top: 50px; 
+    }
+
+    .LogoutButton img {
+        margin-right: 10px;
     }
 }

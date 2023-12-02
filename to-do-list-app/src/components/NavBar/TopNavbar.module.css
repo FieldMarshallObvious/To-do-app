@@ -1,16 +1,16 @@
 .TopNavbar {
     position: fixed;
-    width: calc(100% - 75px); 
-    margin-right: 50px; 
-    margin-left: 20px; 
+    width: 100%;
+    margin-right: 0; 
+    margin-left: 0; 
     background-color: rgba(251, 251, 251, 1);
-    padding: 10px 15px 10px 15px; 
+    padding: 10px 15px;
     display: flex; 
     align-items: center; 
     justify-content: space-between; 
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
     z-index: 1000;
-    height: 60 px;
+    height: 60px;
 }
 
 .TopNavbar .TaskInfo, .SettingsIconContainer {
@@ -29,13 +29,13 @@
 
 .SettingsIcon {
     width: 20px; 
-    height: 20px;
+    height: 15px;
   }
   
   @media (min-width: 600px) {
     .SettingsIcon {
-      width: 35px; 
-      height: 35px;
+      width: 26px; 
+      height: 26px;
     }
   }
 
