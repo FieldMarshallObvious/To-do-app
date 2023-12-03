@@ -30,19 +30,22 @@ function CalendarWidget(projects) {
 
     // Filter out all values except for those that are on the same day as the date
     const dueTasks = tasks.flat().filter(task => 
-      sameDay(normalizeSelectedDate, task.startDate) || 
-      sameDay(normalizeSelectedDate, task.endDate));
+      sameDay(normalizeSelectedDate, task.startDate));
     if (dueTasks.length > 0) {
       return  <div className='circle-container'> 
                     <div className={`base-circle`} style={{background: dueTasks[0].color}}></div>
               </div>;
+    } else {
+      return <div>
+                <div className='circle-container'> 
+                    <div className={`base-circle`} style={{background: 'white', opacity: 0}}></div>
+                </div>
+      </div>
     }
-
-    return null;
   };
 
   const handleDateClick = date => {
-    const dueTasks = tasks.filter(task => date >= task.startDate && date <= task.endDate);
+    const dueTasks = tasks.flat().filter(task => date >= task.startDate && date <= task.endDate);
     setSelectedTasks(dueTasks);
   };
 

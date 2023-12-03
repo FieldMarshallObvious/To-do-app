@@ -15,14 +15,22 @@
     align-items: center;
     justify-content: center;
   }
+
+  .react-calendar__tile:hover {
+    border-radius: 15%;
+  }
+
   .react-calendar__tile--has-tasks {
     border-radius: 50%;
   }
 
   .react-calendar__tile--active {
     background-color: #F0AF4D  !important;
-    border: 2px solid #F0AF4D !important;
     border-radius: 15%;
+  }
+
+  .react-calendar__tile--active .base-circle {
+    background-color: #F0AF4D !important;
   }
 
   .circle-container {
