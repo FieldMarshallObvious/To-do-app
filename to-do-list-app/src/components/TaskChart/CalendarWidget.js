@@ -2,24 +2,40 @@ import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../TaskChart/CalendarWidget.css';
+import YearMonthDateFormat  from '../../utils/YearMonthDateFormat';
+
+function normalizeDate(date) {
+  date.setHours(0, 0, 0, 0);
+  return date;
+}
+
+function sameDay(d1, d2) {
+  if (!d1 || !d2) {
+    return false;
+  }
+  
+  return d1.getFullYear() === d2.getFullYear() &&
+         d1.getMonth() === d2.getMonth() &&
+         d1.getDate() === d2.getDate();
+}
 
 function CalendarWidget(projects) {
   const [date, setDate] = useState(new Date());
   const [selectedTasks, setSelectedTasks] = useState([]);
   const [containerHeight, setContainerHeight] = useState(window.innerHeight);
-
-  const tasks = [
-    { name: 'Task 1', startDate: new Date('2023-11-01'), endDate: new Date('2023-11-03'), color: 'blue' },
-    { name: 'Task 2', startDate: new Date('2023-11-05'), endDate: new Date('2023-11-06'), color: 'green' },
-    // Add more tasks
-  ];
+  const [tasks, setTasks] = useState([]);
 
   const tileContent = ({ date }) => {
-    const dueTasks = tasks.filter(task => date >= task.startDate && date <= task.endDate);
+    let normalizeSelectedDate = normalizeDate(new Date(date));
 
+    // Filter out all values except for those that are on the same day as the date
+    const dueTasks = tasks.flat().filter(task => 
+      sameDay(normalizeSelectedDate, task.startDate) || 
+      sameDay(normalizeSelectedDate, task.endDate));
     if (dueTasks.length > 0) {
-      const taskColor = dueTasks[0].color; // Assuming all tasks for a day have the same color
-      return <div className={`red-circle ${taskColor}-circle`}></div>;
+      return  <div className='circle-container'> 
+                    <div className={`base-circle`} style={{background: dueTasks[0].color}}></div>
+              </div>;
     }
 
     return null;
@@ -35,32 +51,25 @@ function CalendarWidget(projects) {
       return [];
     }
 
-    const tasks = projects.map(project => {
-      if (!project.Tasks || !Array.isArray(project.Tasks) || project.Tasks.length === 0) {
-        return [];
-      }
-
+    const tasks = projects.filter(project => project.Tasks && Array.isArray(project.Tasks) && project.Tasks.length > 0).flat(1).map(project => {
       return project.Tasks.map(task => {
         return {
           name: task.name,
-          startDate: task.due_date,
-          endDate: task.due_date,
+          startDate: normalizeDate(new Date( YearMonthDateFormat(task.due_date))),
+          endDate: normalizeDate(new Date(new Date(YearMonthDateFormat(task.due_date)).getTime() + (24 * 60 * 60 * 1000))),
           color: project.Color ? project.Color : 'blue',
         };
       });
     });
 
-    console.log("Tasks: ", tasks);
     return tasks;
 
   }
 
   useEffect(() => {
-    console.log("Projects are: ", projects)
-    console.log(typeof projects, Array.isArray(projects.projects));
-
     if (projects) {
       const tasks = processProjects(projects);
+      setTasks(tasks);
     }
   }, [projects]);
 
