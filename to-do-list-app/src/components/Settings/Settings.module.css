@@ -1,8 +1,7 @@
 .Sidebar {
     position: fixed;
-    top: 62px; 
+    top: 52px; 
     right: 0; 
-    height: calc(100vh - 550px);
     width: 250px; 
     background-color: rgba(251, 251, 251, 0.914);  
     padding: 10px; 

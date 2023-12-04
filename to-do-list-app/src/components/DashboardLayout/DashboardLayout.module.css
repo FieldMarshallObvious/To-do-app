@@ -119,3 +119,60 @@
 .addCardButton:hover{
     background-color: #f0c993 !important;
 }
+
+.cardBody, .radioLabel, .selectionTitle, .btnCustomColor {
+    font-family: 'Helvetica';
+  }
+  
+  .cardBody {
+    font-size: 1.1em; 
+    color: #333; 
+    padding: 20px;
+  }
+  
+  
+  .radioGroup {
+    display: flex;
+    flex-direction: column; 
+    gap: 10px; 
+    margin-bottom: 20px; 
+  }
+  
+ 
+  .radioLabel {
+    font-size: 1.05em; 
+    color: #555; 
+    display: flex;
+    align-items: center; 
+  }
+  
+  
+  .radioInput {
+    margin-right: 10px; 
+    transform: scale(1.6); 
+  }
+  
+  
+  .projectSelectionContainer {
+    margin-top: 20px; 
+  }
+  
+  
+  .selectionTitle {
+    font-size: 1.2em; 
+    font-weight: bold; 
+    margin-bottom: 15px;
+  }
+  
+ 
+  .buttonGroup {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 10px; 
+  }
+  
+  
+  .btnCustomColor {
+    font-size: 1em; 
+    padding: 10px 15px; 
+  }

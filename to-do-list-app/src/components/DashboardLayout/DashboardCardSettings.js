@@ -21,6 +21,7 @@ const DashboardCardSettings = ({ allProjects, settings, updateSettings }) => {
     setSelectedProjects(newSelectedProjects);
     updateSettings({ ...settings, selectedProjects: newSelectedProjects });
   };
+  
 
   useEffect(() => {
     console.log("Settings are", settings)
@@ -38,56 +39,59 @@ const DashboardCardSettings = ({ allProjects, settings, updateSettings }) => {
   }, [allProjects]);
 
   return (
-      <Card.Body>
-        <div>
-          <label>
-            <input
-              type="radio"
-              value="projects"
-              checked={displayOption === 'projects'}
-              onChange={handleDisplayChange}
-            />
-            Projects
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="graph"
-              checked={displayOption === 'graph'}
-              onChange={handleDisplayChange}
-            />
-            Graph
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="calendar"
-              checked={displayOption === 'calendar'}
-              onChange={handleDisplayChange}
-            />
-            Calendar
-          </label>
+    <Card.Body className={styles.cardBody}>
+      <div className={styles.radioGroup}>
+        <label className={styles.radioLabel}>
+          <input
+            type="radio"
+            value="projects"
+            checked={displayOption === 'projects'}
+            onChange={handleDisplayChange}
+            className={styles.radioInput}
+          />
+          Projects
+        </label>
+        <label className={styles.radioLabel}>
+          <input
+            type="radio"
+            value="graph"
+            checked={displayOption === 'graph'}
+            onChange={handleDisplayChange}
+            className={styles.radioInput}
+          />
+          Graph
+        </label>
+        <label className={styles.radioLabel}>
+          <input
+            type="radio"
+            value="calendar"
+            checked={displayOption === 'calendar'}
+            onChange={handleDisplayChange}
+            className={styles.radioInput}
+          />
+          Calendar
+        </label>
+      </div>
+
+      
+        <div className={styles.projectSelectionContainer}>
+          <h3 className={styles.selectionTitle}>Select Projects:</h3>
+          <ButtonGroup className={styles.buttonGroup}>
+            {allProjects.map((project) => (
+              <Button
+                className={`${styles.btnCustomColor}`}
+                key={project.Title}
+                variant={selectedProjects.includes(project.Title) ? 'primary' : 'secondary'}
+                onClick={() => handleProjectSelectionChange(project.Title)}
+                active={selectedProjects.includes(project.Title)}
+              >
+                {project.Title}
+              </Button>
+            ))}
+          </ButtonGroup>
         </div>
-
-        {(displayOption === 'projects' || displayOption == 'graph' )&& (
-          <div style={{overflowX: "scroll"}}>
-            <h3>Select Projects:</h3>
-            <ButtonGroup>
-              {allProjects.map((project) => (
-                <Button className={`${styles.btnCustomColor}`}
-                  key={project.Title}
-                  variant={selectedProjects.includes(project.Title) ? 'primary' : 'secondary'}
-                  onClick={() => handleProjectSelectionChange(project.Title)}
-                  active={selectedProjects.includes(project.Title)}
-                >
-                  {project.Title}
-                </Button>
-              ))}
-            </ButtonGroup>
-          </div>
-      )}
-
-      </Card.Body>
+      
+    </Card.Body>
   );
 };
 

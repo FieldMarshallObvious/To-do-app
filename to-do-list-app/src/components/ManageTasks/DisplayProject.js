@@ -107,7 +107,7 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEdi
                         data-toggle="collapse" 
                         onClick={() => handleClick(index)}
                     >
-                         <h2>{project.Title}</h2>
+                         <h2 className={styles.ProjectTitle}>{project.Title}</h2>
                          { isEditing ? 
                             <>
                             <PencilSquare

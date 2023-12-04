@@ -12,6 +12,15 @@
     z-index: 1000;
     height: 50px;
 }
+.TaskInfo {
+  margin-left: 50px !important;
+  font-weight: 500 !important; 
+  line-height: 1.6; 
+  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1); 
+  letter-spacing: 0.5px; 
+  font-family: 'Helvetica';
+  font-size: 16px !important; 
+}
 
 .TopNavbar .TaskInfo, .SettingsIconContainer {
     flex-grow: 0;
@@ -21,9 +30,7 @@
     font-weight: 500; 
 }
 
-.TaskInfo {
-  margin-left: 50px !important;
-}
+
 
 .SettingsIconContainer {
     cursor: pointer; 

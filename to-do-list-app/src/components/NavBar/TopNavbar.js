@@ -32,8 +32,8 @@ export const TopNavbar = () => {
                 <span>You have no tasks coming up!</span>
                 :
                 <>
-                  <span>Next Task: {nearestTask.name} </span>
-                  <span>Due Date: {nearestTask.due_date ? numericFormatDate(nearestTask.due_date) : ""}</span>
+                  <span>Task: {nearestTask.name}, </span>
+                  <span>Date: {nearestTask.due_date ? numericFormatDate(nearestTask.due_date) : ""}</span>
                 </>
               }
             </>

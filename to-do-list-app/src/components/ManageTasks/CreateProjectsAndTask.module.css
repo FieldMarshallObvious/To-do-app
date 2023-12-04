@@ -4,7 +4,7 @@
 } 
 
 .projectHeading {
-    font-size: 32px;
+    font-size: 26px;
     font-family: 'Inter', sans-serif;
     font-weight: 900 !important;
     text-decoration: none !important;
@@ -35,4 +35,11 @@
 
 .editIcon {
     visibility: hidden; 
+}
+
+.ProjectTitle {
+font-size: 24px;
+font-family: 'Helvetica' !important;
+color: #333;
+
 }
