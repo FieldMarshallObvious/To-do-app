@@ -75,15 +75,16 @@ const DashboardCardSettings = ({ allProjects, settings, updateSettings }) => {
 
       
         <div className={styles.projectSelectionContainer}>
-          <h3 className={styles.selectionTitle}>Select Projects:</h3>
-          <ButtonGroup className={styles.buttonGroup}>
+          <h3 className={styles.selectionTitle} style={{opacity: displayOption !== 'calendar' ? '100%': '50%'}}>Select Projects:</h3>
+          <ButtonGroup className={styles.buttonGroup} style={{opacity: displayOption !== 'calendar' ? '100%':'50%'}}>
             {allProjects.map((project) => (
               <Button
-                className={`${styles.btnCustomColor}`}
+                className={``}
                 key={project.Title}
-                variant={selectedProjects.includes(project.Title) ? 'primary' : 'secondary'}
+                variant={( selectedProjects.includes(project.Title) && displayOption !== 'calendar' ) ? 'primary' : 'secondary'}
                 onClick={() => handleProjectSelectionChange(project.Title)}
                 active={selectedProjects.includes(project.Title)}
+                disabled={displayOption === 'calendar'}
               >
                 {project.Title}
               </Button>
