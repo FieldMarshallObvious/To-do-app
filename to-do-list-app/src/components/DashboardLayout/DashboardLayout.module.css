@@ -105,9 +105,17 @@
     top: 70px;
     left: 50px;
     height: 44px;
-    border: 1px solid #AAA399 !important;
+    border: 1px solid #ffffff !important;
+    background-color: #F0AF4D;
+    font-weight: 550;
     }
 
 .dashboardLayoutStyle{
     overflow: "auto";
+}
+
+.addCardButton:focus,
+.addCardButton.focus,
+.addCardButton:hover{
+    background-color: #f0c993 !important;
 }

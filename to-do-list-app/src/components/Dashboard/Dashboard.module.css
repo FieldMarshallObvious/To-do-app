@@ -4,29 +4,30 @@
     width: 55px;
     align-items: center !important;
     margin: 0;
-    border: 1px solid #AAA399 !important;
-    background-color: transparent;
+    border: 1px solid #ffffff !important;
+    background-color: #F0AF4D;
 }
 
 .lockButton:focus,
 .lockButton.focus,
 .lockButton:hover{
-    background-color: #AAA399 !important;
+    background-color: #f0c993 !important;
 }
 
 .createProjectButton {
     height: 44px;
     width: fit-content;
     align-items: center !important;
-    color: #AAA399;
+    color: #ffffff;
     margin: 0;
     margin-right: 20px !important;
-    border: 1px solid #AAA399 !important;
-    background-color: transparent;
+    border: 1px solid #ffffff !important;
+    background-color: #F0AF4D;
+    font-weight: 550;
 }
 
 .createProjectButton:focus,
 .createProjectButton.focus,
 .createProjectButton:hover{
-    background-color: #AAA399 !important;
+    background-color: #f0c993 !important;
 }

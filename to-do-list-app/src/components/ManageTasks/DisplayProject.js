@@ -227,7 +227,7 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEdi
                             createTask={createTask} />
 
                         <div className="d-flex justify-content-end" style={{width: "100%"}} >
-                            <PlusCircleFill color='#F0AF4D' size="48px" className='ml-auto' onClick={() => { 
+                            <PlusCircleFill color={`${project.Color ? project.Color : "#F0AF4D"}`} size="40px" className='ml-auto' onClick={() => { 
                                 console.log("Clicked add task");
                                 setOpenModalTaskCreateIndex(project.Title);
                                 setShowTaskModal(true);

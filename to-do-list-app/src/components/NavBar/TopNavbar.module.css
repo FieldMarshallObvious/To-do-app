@@ -10,13 +10,19 @@
     justify-content: space-between; 
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
     z-index: 1000;
-    height: 60px;
+    height: 50px;
 }
 
 .TopNavbar .TaskInfo, .SettingsIconContainer {
-    margin: 0 10px; 
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin: 10px 10px; 
     font-size: 16px; 
     font-weight: 500; 
+}
+
+.TaskInfo {
+  margin-left: 50px !important;
 }
 
 .SettingsIconContainer {
@@ -40,7 +46,12 @@
   }
 
 
-
+.colorShape {
+  position: absolute;
+  width: 10px;
+  height: 50px;
+  background-color: #F0AF4D;
+}
 
   
   

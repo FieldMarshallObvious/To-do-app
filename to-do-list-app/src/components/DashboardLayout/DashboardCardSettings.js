@@ -15,7 +15,7 @@ const DashboardCardSettings = ({ allProjects, settings, updateSettings }) => {
   // When the display option changes, update the state and notify the parent component
   const handleProjectSelectionChange = (projectId) => {
     const newSelectedProjects = selectedProjects.includes(projectId)
-      ? selectedProjects.filter(id => id === projectId)
+      ? selectedProjects.filter(id => id !== projectId)
       : [...selectedProjects, projectId];
   
     setSelectedProjects(newSelectedProjects);

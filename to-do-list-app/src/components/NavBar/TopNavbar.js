@@ -21,6 +21,9 @@ export const TopNavbar = () => {
   return (
     <>
       <nav className={styles.TopNavbar}>
+        <div className={styles.colorShape}>
+
+        </div>
         <div className={styles.TaskInfo}>
           { 
             nearestTask ? 

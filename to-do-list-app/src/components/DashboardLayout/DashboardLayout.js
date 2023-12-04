@@ -356,7 +356,7 @@ export default class DashboardLayout extends Component {
         rowHeight={281}
         measureBeforeMount={false}
         style={{ height: "100%", overflow: "auto" }}
-        margin={[45, 45, 45]}
+        margin={[30, 20, 30]}
         onDragStop={this.onDragStop}
         isDraggable={this.state.locked} 
         onLayout={(event) => {
