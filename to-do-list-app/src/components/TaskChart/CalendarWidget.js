@@ -58,7 +58,7 @@ function CalendarWidget(projects) {
       return project.Tasks.map(task => {
         return {
           name: task.name,
-          startDate: normalizeDate(new Date( YearMonthDateFormat(task.due_date))),
+          startDate: normalizeDate(new Date( new Date(YearMonthDateFormat(task.due_date)).getTime() + (24 * 60 * 60 * 1000))),
           endDate: normalizeDate(new Date(new Date(YearMonthDateFormat(task.due_date)).getTime() + (24 * 60 * 60 * 1000))),
           color: project.Color ? project.Color : 'blue',
         };
