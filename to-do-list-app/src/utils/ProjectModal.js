@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
 function ProjectModal({ show, onHide, onCreateProject = null, createProject = null, isEditProject=false, editProject=null, onEditProject=null, oldProjectTitle = '', oldProjectDescription = '', oldProjectColor = '#0057FF' }) {
   const [projectTitle, setProjectTitle] = useState( oldProjectTitle );
   const [projectDescription,  setProjectDescription] = useState(oldProjectDescription);
   const [projectColor, setProjectColor] = useState( oldProjectColor ? oldProjectColor:'#0057FF'); // Default color
+
+  console.log("Old Project title: ", oldProjectTitle);
+  console.log("Old Project description: ", oldProjectDescription);
+  console.log("Old Project color: ", oldProjectColor);
 
   const handleSubmit = (e) => {
     e.preventDefault(); 
@@ -19,6 +23,12 @@ function ProjectModal({ show, onHide, onCreateProject = null, createProject = nu
     setProjectColor('#0057FF'); 
     onHide(); 
   };
+
+  useEffect(() => {
+    setProjectTitle(oldProjectTitle);
+    setProjectDescription(oldProjectDescription);
+    setProjectColor(oldProjectColor || '#0057FF');
+  }, [oldProjectTitle, oldProjectDescription, oldProjectColor]);
 
   return (
     <Modal show={show} onHide={onHide} centered>
