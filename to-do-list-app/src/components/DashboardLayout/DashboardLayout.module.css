@@ -88,11 +88,7 @@
     border-color: green !important;
 }
 
-.btnCustomColor {
-    background-color: #F0AF4D !important;
-    color: white !important;
 
-}
 
 .btnCustomColor:hover,
 .btnCustomColor:focus,
@@ -127,7 +123,7 @@
   .cardBody {
     font-size: 1.1em; 
     color: #333; 
-    padding: 20px;
+    padding: 10px;
   }
   
   
@@ -148,20 +144,20 @@
   
   
   .radioInput {
-    margin-right: 10px; 
-    transform: scale(1.6); 
+    margin-right: 12px; 
+    transform: scale(1.8); 
   }
   
   
   .projectSelectionContainer {
-    margin-top: 20px; 
+    margin-top: 10px; 
   }
   
   
   .selectionTitle {
     font-size: 1.2em; 
     font-weight: bold; 
-    margin-bottom: 15px;
+    margin-bottom: 10px;
   }
   
  
@@ -174,5 +170,5 @@
   
   .btnCustomColor {
     font-size: 1em; 
-    padding: 10px 15px; 
+    padding: 10px 15px;
   }

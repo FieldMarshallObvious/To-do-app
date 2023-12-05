@@ -39,6 +39,8 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: '10px',
+          
+          
         },
       },
     },
@@ -47,7 +49,7 @@ const theme = createTheme({
         root: {
           borderRadius: '10px',
           backgroundColor: '#FFFFF',
-          borderColor: '#AAA399'
+          borderColor: '#AAA399',
         },
       },
     },
