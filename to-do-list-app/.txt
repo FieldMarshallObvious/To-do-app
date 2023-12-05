@@ -1,0 +1,7 @@
+Requirements: Node.js must be installed
+
+Steps to run: 
+	1. In the terminal, navigate to the directory that contains the source code (to-do-list-app)
+	2. Run the command npm i to install packages
+	3. Run the command npm start. If the application doesn't open automatically, open http://localhost:3000/ to view it.
+
