@@ -86,7 +86,7 @@ function DisplayProject({ showProjectModal, setShowProjectModal, projects, isEdi
     // Update the index when the number of projects has been loaded 
     useEffect(() => {
         if (projects && projects.length) {
-            if ( openIndex.length == 0 && projects.length != 0) {
+            if (projects.length !== openIndex.length) {
                 setOpenIndex(new Array(projects.length).fill(false));
             }
 
